@@ -1,0 +1,43 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx, setspace}
+
+
+\title{Bachelor Thesis}
+\author{Michele Zoncheddu}
+\date{March 2020}
+\makeatletter
+
+\begin{document}
+
+\begin{titlepage}
+	\centering
+	\includegraphics[height=12pc]{img/marchio_unipi.pdf} \\
+	\null
+	\textsc{\LARGE Department of Computer Science}
+	\vfill
+	{\huge{\@title}} \\
+	\null
+	{\LARGE{19-20}}
+	\vfill
+	\emph{Author:} \@author \\
+	\@date
+\end{titlepage}
+
+\setstretch{1.15}
+\tableofcontents
+\setstretch{1.0}
+\pagebreak
+
+	\input{introduction.tex}
+	\newpage
+	\input{background.tex}
+	\newpage
+	\input{technologies.tex}
+	\newpage
+	\input{development.tex}
+	\newpage
+	\input{conclusions.tex}
+	
+\end{document}

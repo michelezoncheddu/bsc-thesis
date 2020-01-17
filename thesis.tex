@@ -1,7 +1,8 @@
 \documentclass{article}
-\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
 \usepackage[hidelinks]{hyperref}
-\usepackage{graphicx, setspace}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, enumitem, graphicx, setspace}
 
 
 \title{Title}
@@ -14,30 +15,30 @@
 \begin{titlepage}
 	\centering
 	\includegraphics[height=12pc]{img/cherubino_unipi.pdf}
-	\bigskip
-	\bigskip
-	\bigskip
+	\bigbreak
+	\bigbreak
+	\bigbreak
 
 	{\LARGE{\textbf{\@title}}}
-	\bigskip
-	\bigskip
-	\medskip
+	\bigbreak
+	\bigbreak
+	\medbreak
 
 	{\large{Bachelor of Science Thesis}}
-	\bigskip
-	\bigskip
-	\medskip
+	\bigbreak
+	\bigbreak
+	\medbreak
 
 	{\Large{\textbf{\@author}}}
-	\bigskip
-	\bigskip
-	\medskip
+	\bigbreak
+	\bigbreak
+	\medbreak
 
 	{\Large{University of Pisa}}
-	\bigskip
+	\bigbreak
 
 	{\Large{Department of Computer Science}}
-	\bigskip
+	\bigbreak
 
 	{\Large{\@date}}
 \end{titlepage}
@@ -46,6 +47,8 @@
 \tableofcontents
 \setstretch{1.3}
 \pagebreak
+
+\setlist[itemize]{itemsep=0mm}
 
 	\input{introduction.tex}
 	\newpage

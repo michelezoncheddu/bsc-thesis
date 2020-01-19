@@ -4,6 +4,13 @@
 \dots
 
 \subsection{Motion capture}
+\begin{center}
+	\begin{figure}[ht!]
+		\makebox[\textwidth]{\includegraphics[width=0.50\paperwidth]{img/data_fusion.png}}
+		\caption{Data fusion schema.}
+	\end{figure}
+\end{center}
+
 For a better training of the neural network, the main problem was to achieve the cleanest data from the sensors. Previously, the data collected were:
 \begin{itemize}
 	\item yaw, pitch and roll angles;
@@ -13,16 +20,16 @@ For a better training of the neural network, the main problem was to achieve the
 \end{itemize}
 \bigbreak
 
-Through preliminary tests has been discovered that acceleration values included gravity; thus it was necessary a more complex training data collection, due to the lack of orientation invariance (in order to obtain such invariance it would have been necessary to collect data with the toy rotated in any possible angle).
+Through preliminary tests has been discovered that acceleration values included gravity; thus it was necessary a more complex training data collection, due to the lack of orientation invariance (in order to obtain such invariance it would have been necessary to collect every pattern with the toy rotated in any possible angle).
 
-Nevertheless, gravity-free acceleration data were computed by the device after the Madgwick fusion algorithm and sent to the server, but only used for the 3D visual representation, both in training and session recording phase. It was decided to keep such data and analyze it to see if it was reliabile over time.
+Nevertheless, gravity-free acceleration data were computed by the device (with the help of the Madgwick's fusion algorithm output) and sent to the server but not stored in the database, only used for the 3D visual representation, both in training and session recording phase. It was decided to keep such data and analyze it to see if it was reliable over time.
 \bigbreak
 
-After some testing, it was discovered that there was an error in the yaw angle calculation that grew with the device rotation over each axis, and it was initially imputed to the Madgwick algorithm, more precisely to the convergence of its error-correction gradient descent algorithm.
+Some testing showed quickly that there was an error in the yaw angle calculation: the more the toy was rotated (regardless of the axis), the more the yaw diverged. Such error was initially imputed to the Madgwick algorithm implementation, more precisely to the convergence of its error-correction gradient descent algorithm.
 
-Unfortunately, several trials with different algorithm implementations and different values of the $\beta$ parameter (the magnitude of the gyroscope measurement error [CITE]\footnote{Increasing beta leads to faster bias corrections and higher sensitiveness to lateral accelerations.}) have no given better results over time, and worse, sometimes ghost accelerations were found.
+Unfortunately, different algorithm implementations and different values of the algorithm's gain parameter (the magnitude $\beta$ of the gyroscope measurement error\footnote{Increasing $\beta$ leads to faster bias corrections and higher sensitiveness to lateral accelerations.} [CITE]) have no given better results over time, and worse, sometimes ghost accelerations were found.
 
-During the tests, it was noticed that recordings of the same pattern with different device orientations didn't split the acceleration differently among axes, so the reference system was integral with the Earth's center instead of the device. To align it back to the device, the acceleration vector has been rotated using a 3D rotation matrix.
+During the tests, it was noticed that recordings of the same pattern with different device orientations didn't split the acceleration differently among axes, revealing that the reference system was integral with the Earth's center instead of the device's sensor center. To align it back, the acceleration vector has been rotated using a 3D rotation matrix. The 3 rotation angles are given by the Madgwick algorithm in the quaternion form, then converted to the eulerian one.
 \bigbreak
 
 A \textit{yaw} is a CCW rotation of $\alpha$ on the $z$-axis. The rotation matrix is
@@ -68,8 +75,13 @@ It is important to note that $R(\alpha, \beta, \gamma)$ performs the roll first,
 \bigbreak
 
 Given an acceleration vector $\vec a$, the rotated one is $\vec a_r = R(\alpha, \beta, \gamma) \vec a$.
-The multiplication doesn't need specific optimization, because the C++ code is compiled by \texttt{GCC} with the \texttt{-Os}, flag, that performs the loop unrolling when needed; however, the dimensions at stake are very small.
+The matrix-vector multiplication doesn't need specific optimizations in the code because the dimensions at stake are too small for a meaningful speed or space improvement, and however the C++ code is compiled by \texttt{GCC} with the \texttt{-Os} flag, that includes the loop unrolling optimization [CITE].
 \bigbreak
+
+At this point, both problems were solved: the coordinate system was integral with the toy, and the yaw angle was calculated correctly.
+\bigbreak
+
+Once achieved a reliable gravity-filtered acceleration approximation, it was possible to do some fine tuning. Calibration, hard and soft iron.
 
 The velocity approximation was excluded by the training set because\dots
 \bigbreak

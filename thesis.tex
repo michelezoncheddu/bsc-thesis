@@ -1,8 +1,15 @@
-\documentclass{article}
+\documentclass{report}
 \usepackage[english]{babel}
 \usepackage[hidelinks]{hyperref}
 \usepackage[utf8]{inputenc}
-\usepackage{amsmath, enumitem, graphicx, setspace}
+\usepackage{amsmath, fancyhdr, enumitem, graphicx, setspace}
+
+
+\pagestyle{fancy}
+\fancyhead[R]{{\nouppercase{\leftmark}}}
+\fancyhead[L]{}
+
+\setlist[itemize]{itemsep=0mm}
 
 
 \title{Title}
@@ -47,8 +54,6 @@
 \tableofcontents
 \setstretch{1.3}
 \pagebreak
-
-\setlist[itemize]{itemsep=0mm}
 
 	\input{introduction.tex}
 	\newpage

@@ -2,8 +2,14 @@
 \usepackage[english]{babel}
 \usepackage[hidelinks]{hyperref}
 \usepackage[utf8]{inputenc}
-\usepackage{amsmath, fancyhdr, enumitem, graphicx, setspace}
+\usepackage{amsmath, fancyhdr, enumitem, geometry, graphicx, setspace}
 
+\newgeometry{
+    top=1.5in,
+    bottom=1.5in,
+    outer=1.5in,
+    inner=1.5in,
+}
 
 \pagestyle{fancy}
 \fancyhead[R]{{\nouppercase{\leftmark}}}

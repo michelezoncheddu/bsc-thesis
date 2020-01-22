@@ -1,18 +1,27 @@
 \documentclass{report}
-\usepackage[english]{babel} % For hyphenation
-\usepackage[hidelinks]{hyperref} % For links
-\usepackage[utf8]{inputenc} % For input encoding
+
 \usepackage{amsmath} % For math
-\usepackage{fancyhdr} % For the fancy header
+\usepackage[english]{babel} % For hyphenation
+\usepackage[backend=bibtex]{biblatex} % For bibliography
 \usepackage{enumitem} % For lists spacing
+\usepackage{fancyhdr} % For the fancy header
 \usepackage{geometry} % For page margins
 \usepackage{graphicx} % For images
+\usepackage[hidelinks]{hyperref} % For links
+\usepackage[utf8]{inputenc} % For input encoding
 \usepackage{listings} % For source code embedding
 \usepackage{setspace} % For line spacing
 \usepackage{xcolor} % Syntax highlight for source code
 
+
+% Bibliography
+\addbibresource{bibliography.bib}
+\addbibresource{sitography.bib}
+
+% Code background
 \definecolor{backgroundColour}{rgb}{0.95, 0.95, 0.96}
 
+% C++ code style
 \lstdefinestyle{CPPStyle} {
 	language=C++,  
 	basicstyle=\ttfamily,
@@ -32,6 +41,7 @@
 	tabsize=4
 }
 
+% Page margins
 \newgeometry{
     top=1.5in,
     bottom=1.5in,
@@ -39,10 +49,12 @@
     inner=1.5in,
 }
 
+% Page headers
 \pagestyle{fancy}
 \fancyhead[R]{{\nouppercase{\leftmark}}}
 \fancyhead[L]{}
 
+% Space between list elements
 \setlist[itemize]{itemsep=1mm}
 
 
@@ -98,5 +110,8 @@
 	\input{development.tex}
 	\newpage
 	\input{conclusions.tex}
-	
+
+	\printbibliography[nottype=online, title=Bibliography]
+	\printbibliography[type=online, title=Sitography]
+
 \end{document}

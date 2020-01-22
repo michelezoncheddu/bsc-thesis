@@ -13,5 +13,8 @@
 *.toc
 *.synctex.gz
 
+*.bcf
+*-blx.bib
+
 *.xml
 thesis.pdf

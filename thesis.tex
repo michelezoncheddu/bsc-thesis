@@ -1,7 +1,8 @@
-\documentclass{report}
+\documentclass[a4paper, 12pt]{report}
 
 \usepackage{amsmath} % For math
-\usepackage[english]{babel} % For hyphenation
+\usepackage{amssymb} % For symbols
+%\usepackage[english]{babel} % For hyphenation
 \usepackage[backend=bibtex]{biblatex} % For bibliography
 \usepackage{enumitem} % For lists spacing
 \usepackage{fancyhdr} % For the fancy header
@@ -24,13 +25,13 @@
 % C++ code style
 \lstdefinestyle{CPPStyle} {
 	language=C++,  
-	basicstyle=\ttfamily,
+	basicstyle=\ttfamily\footnotesize,
 	keywordstyle=\color{blue}\ttfamily,
 	stringstyle=\color{red}\ttfamily,
 	commentstyle=\color{magenta}\ttfamily,
 	morecomment=[l][\color{magenta}]{\#},
     backgroundcolor=\color{backgroundColour},
-    breakatwhitespace=false,
+	breakatwhitespace=false,
     breaklines=true,
     captionpos=b,
     keepspaces=true,
@@ -53,6 +54,7 @@
 \pagestyle{fancy}
 \fancyhead[R]{{\nouppercase{\leftmark}}}
 \fancyhead[L]{}
+\setlength{\headheight}{16pt} % Useless, only to make a warning disappear
 
 % Space between list elements
 \setlist[itemize]{itemsep=1mm}
@@ -100,6 +102,8 @@
 \tableofcontents
 \setstretch{1.3}
 \pagebreak
+
+	\sloppy
 
 	\input{introduction.tex}
 	\newpage

@@ -5,16 +5,17 @@
 .TemporaryItems
 .Trashes
 
-.vscode
-
 *.aux
 *.log
 *.out
 *.toc
 *.synctex.gz
-
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
 *.bcf
 *-blx.bib
 
-*.xml
+*.run.xml
 thesis.pdf

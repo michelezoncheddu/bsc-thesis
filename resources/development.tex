@@ -6,7 +6,7 @@ In the previous project's code, some time and memory optimizations have been mad
 
 \section{MQTT QoS2 caching}
 As mentioned in the \textit{Unsolved Issues} chapter of Dario Piotrowicz's thesis \cite{Pio19}, there was a problem with unreliable Wi-Fi networks (an issue in the library's GitHub repository is still open \cite{githubQos2Issue}): all messages generated while a broken client-broker connection were not stored to be sent when the connection is re-established.\\
-To solve that issue have been implemented two caching queues, one for each connection: the playing session one and the neural network's pattern collection one. The cache size has been set to a safe value of 32 kilobytes, the biggest value that is always free while the program running; bigger values led the Photon out of memory.
+To solve that issue have been implemented two caching queues, one for each connection: the playing session one and the neural network's pattern collection one. The cache size has been set to a safe value of 32 kilobytes (tested experimentally: bigger values led the Photon out of memory more often than not).
 The maximum number of messages that can be cached is stored in the \texttt{cache\_size} variable. With a maximum message size of 512 characters (511 effective characters because of the null terminated string), the value is easily calculated as 32.
 
 Follows the playing session's connection caching implementation; the neural network one is analogous.

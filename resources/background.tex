@@ -8,7 +8,7 @@ Unfortunately, the integrated Wi-Fi module was not powerful enough to ensure a r
 The code deployment can be performed seamlessly through a web-based IDE, that compiles and flashes the code to the selected device OTA (Over-The-Air). It is also possible to control the real-time device's status through a web-based too console, that allows to flash the firmware to a specific version (downgrades are trickier than upgrades, especially OTA), and displays graphs for data such Wi-Fi's signal strength and quality, round trip time and memory usage.
 
 \begin{center}
-	\begin{figure}[ht!]
+	\begin{figure}[ht]
 		\makebox[\textwidth]{\includegraphics[width=0.3\paperwidth]{img/photon.jpg}}
 		\caption{Particle Photon \cite{Photon}.}
 	\end{figure}
@@ -16,8 +16,9 @@ The code deployment can be performed seamlessly through a web-based IDE, that co
 
 \subsection{Sensors}
 The SparkFun's sensor stick used in the project is a 9DoF (Degrees of Freedom) MARG (Magnetic, Angular Rate and Gravity) MEMS (Micro-Electro-Mechanical Systems) sensor. Its inertial module is the STMicroelectronics's LSM9DS1 integrated circuit, that features a digital linear acceleration sensor a digital angular rate sensor and a digital magnetic sensor: each one can make measurements from $x$, $y$ and $z$ axes, and that's where the 9 degrees of freedom came from. The stick has been connected to the Photon through the I$^2$C serial bus interface. Its compact size and power efficiency make it ideal for embedded systems \cite{SensorDatasheet}.
+
 \begin{center}
-	\begin{figure}[ht!]
+	\begin{figure}[ht]
 		\makebox[\textwidth]{\includegraphics[width=0.3\paperwidth]{img/imu.jpg}}
 		\caption{SparkFun Sensor Stick \cite{IMU}.}
 	\end{figure}
@@ -48,6 +49,106 @@ MongoDB stores data records as BSON documents. BSON is a binary representation o
 \dots
 
 \section{Rotation formalisms in three dimensions}
+This section describes the rotation formalisms used in the project.
+
+\subsection{Tait–Bryan angles}
+Tait–Bryan angles (also called nautical angles or \textit{yaw, pitch and roll}) are a variant of Euler angles, normally used for aerospace applications (in which they are often called Euler angles). Euler angles are a minimal representation (a set of three numbers) of relative orientation. This set of three angles describes a sequence of rotations about the axes of a reference frame. There are, however, sets that describe the same orientation: different combinations of $x$, $y$, and $z$ axes lead to different Euler angles \cite{Rob20}.\\
+The only difference is that Tait–Bryan angles represent rotations about three distinct axes (e.g. $x$-$y$-$z$), while proper Euler angles use the same axis for both the first and third elemental rotations (e.g. $z$-$x$-$z$) \cite{WikipediaEulerAngles}.\\
+Once fixed a reference frame, \textit{yaw, pitch and roll} represent the rotation angle around the $z$, $y$, and $x$ axis, respectively.
+If the rotation occurs about the axes of the original coordinate system, which remains motionless, the rotation is called \textit{extrinsic}, and when it occurs about the axes of the rotating coordinate system, which changes its orientation after each elemental rotation, the rotation is called \textit{intrinsic}. It's interesting to know that $z$-$y$-$x$ intrinsic rotations correspond to $x$-$y$-$z$ extrinsic ones.
+
+\begin{center}
+	\begin{figure}[ht]
+		\makebox[\textwidth]{\includegraphics[width=0.3\paperwidth]{img/plane.pdf}}
+		\caption{Yaw ($\psi$), pitch ($\theta$) and roll ($\varphi$) angles for an aircraft. \cite{WikimediaPlane}}
+	\end{figure}
+\end{center}
+
+All Euler angles share a problem called \textit{gimbal\footnote{A \textit{gimbal} is a pivoted support that allows the rotation of an object about a single axis. \cite{WikipediaGimbal}} lock\footnote{The word lock is misleading: no gimbal is restrained. \cite{WikipediaGimbalLock}}}, that occurs when the orientation of the sensor cannot be uniquely represented, and causes a loss of a degree of freedom.\\
+An example: when the device pitches up 90$^{\circ}$ its pitch and yaw gimbals become aligned, and changes to roll and yaw apply the same rotation to the device.\\
+This problem can be solved by representing rotations using quaternions instead of Euler angles.
+
+\subsection{Rotation matrix}
+In two dimensions, a rotation matrix $R \in \mathbb R^{2 \times 2}$ is a matrix that is used to perform a rotation in Euclidean space. Given a vector $\vec u \in \mathbb R^2$ and an angle $\theta \in \mathbb R$, the vector $\vec u$ rotated through an angle $\theta$ can be written as $R(\theta) \vec u$.\\
+The matrix
+
+\[
+	R =
+	{\begin{pmatrix}
+		\cos \theta & -\sin \theta \\
+		\sin \theta & \cos \theta
+	\end{pmatrix}}
+\]
+rotates points in the $xy$-plane counterclockwise in a \textit{right-handed coordinate system} ($y$ counterclockwise from $x$) through an angle $\theta$ with respect to the $x$ axis about the origin of a two-dimensional Cartesian coordinate system. To perform the rotation on a plane point with standard coordinates $\vec u$ = (x, y), it should be written as column vector, and multiplied by the matrix $R$ \cite{WikipediaRotationM}:
+\bigbreak
+
+\[
+	R \vec u =
+	{\begin{pmatrix}
+		\cos \theta &-\sin \theta \\
+		\sin \theta &\cos \theta
+	\end{pmatrix}}
+	\cdot
+	{\begin{pmatrix}
+		x \\
+		y
+	\end{pmatrix}} =
+	{\begin{pmatrix}
+		x\cos \theta -y\sin \theta \\
+		x\sin \theta +y\cos \theta
+	\end{pmatrix}}
+\]
+\bigbreak
+
+How to represent \textit{yaw, pitch and roll}?
+\bigbreak
+
+A \textit{yaw} is a CCW rotation of $\alpha$ on the $z$-axis. The rotation matrix is
+\[
+	R_z(\alpha) =
+	\begin{pmatrix}
+		\cos\alpha & -\sin\alpha & 0 \\
+		\sin\alpha & \cos\alpha & 0 \\
+		0 & 0 & 1
+	\end{pmatrix}
+\]
+Note that the upper left values compose a 2D rotation matrix, and the coordinates on the third dimension (around whom the rotation happens) are left unchanged. The same applies to the other two matrices, but with the second and the first dimension.
+\bigbreak
+
+A \textit{pitch} is a CCW rotation of $\beta$ on the $y$-axis. The rotation matrix is
+\[
+	R_y(\beta) =
+	\begin{pmatrix}
+		\cos\beta & 0 & \sin\beta \\
+		0 & 1 & 0 \\
+		-sin\beta & 0 & \cos\beta
+	\end{pmatrix}
+\]
+
+A \textit{roll} is a CCW rotation of $\gamma$ on the $x$-axis. The rotation matrix is
+\[
+	R_x(\gamma) =
+	\begin{pmatrix}
+		1 & 0 & 0 \\
+		0 & \cos\gamma & -\sin\gamma \\
+		0 & sin\gamma & \cos\gamma
+	\end{pmatrix}
+\]
+\begin{gather*}
+	R(\alpha, \beta, \gamma) = R_z(\alpha) R_y(\beta) R_x(\gamma) = \\
+	\begin{pmatrix}
+		\cos\alpha \cos\beta & \cos\alpha \sin\beta \sin\gamma - \sin\alpha \cos\gamma & \cos\alpha \sin\beta \cos\gamma + \sin\alpha \sin\gamma \\
+		\sin\alpha \cos\beta & \sin\alpha \sin\beta \sin\gamma + \cos\alpha \cos\gamma & \sin\alpha \sin\beta \cos\gamma - \cos\alpha \sin\gamma \\
+		-\sin\beta & \cos\beta \sin\gamma & \cos\beta \cos\gamma
+	\end{pmatrix}
+\end{gather*}
+It is important to note that $R(\alpha, \beta, \gamma)$ performs the roll first, then the pitch, and finally the yaw. If the order of these operations is changed, a different rotation matrix would result \cite{Lav06}.\\
+Given an acceleration vector $\vec a$, the rotated one is $\vec a_r = R(\alpha, \beta, \gamma) \vec a$.
+
+\subsection{Spherical coordinates}
+\dots
+
+\subsection{Quaternions}
 \dots
 
 \section{Filters}

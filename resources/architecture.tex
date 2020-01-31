@@ -1,0 +1,18 @@
+\chapter{Architecture}
+The MoVEAS project can be split in two major components: the client-side part, to collect and filter sensors' data, and the server-side one, to receive and manage that data.
+
+\section{Client-side}
+The data collected from the Photon basically flowed like as shown in the following schema:
+
+\begin{center}
+	\begin{figure}[ht!]
+		\makebox[\textwidth]{\includegraphics[width=0.65\paperwidth]{img/data_fusion_old.png}}
+		\caption{Previous project's data fusion schema.} \label{old data fusion schema}
+	\end{figure}
+\end{center}
+\bigbreak
+
+As shown in the chapter \ref{Madgwick filter}, the Madgwick filter does not need Kalman filtered data\dots
+
+\section{Server-side}
+\dots

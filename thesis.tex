@@ -3,7 +3,7 @@
 \usepackage{amsmath} % For math
 \usepackage{amssymb} % For symbols
 %\usepackage[english]{babel} % For hyphenation
-\usepackage[backend=bibtex]{biblatex} % For bibliography
+\usepackage[backend=bibtex, urldate=iso, seconds=true]{biblatex} % For bibliography
 \usepackage{enumitem} % For lists spacing
 \usepackage{fancyhdr} % For the fancy header
 \usepackage{geometry} % For page margins
@@ -14,10 +14,9 @@
 \usepackage{setspace} % For line spacing
 \usepackage{xcolor} % Syntax highlight for source code
 
-
 % Bibliography
-\addbibresource{bibliography.bib}
-\addbibresource{sitography.bib}
+\addbibresource{references/bibliography.bib}
+\addbibresource{references/sitography.bib}
 
 % Code background
 \definecolor{backgroundColour}{rgb}{0.95, 0.95, 0.96}
@@ -44,16 +43,16 @@
 
 % Page margins
 \newgeometry{
-    top=1.5in,
-    bottom=1.5in,
-    outer=1.5in,
-    inner=1.5in,
+    top=1.25in,
+    bottom=1.25in,
+    outer=1.5in, % TODO: 1in
+    inner=1.5in, % TODO: 2in
 }
 
 % Page headers
 \pagestyle{fancy}
-\fancyhead[R]{{\nouppercase{\leftmark}}}
 \fancyhead[L]{}
+\fancyhead[R]{{\nouppercase{\leftmark}}}
 \setlength{\headheight}{16pt} % Useless, only to make a warning disappear
 
 % Space between list elements
@@ -105,15 +104,15 @@
 
 	\sloppy
 
-	\input{introduction.tex}
+	\input{resources/introduction.tex}
 	\newpage
-	\input{background.tex}
+	\input{resources/background.tex}
 	\newpage
-	\input{technologies.tex}
+	\input{resources/architecture.tex}
 	\newpage
-	\input{development.tex}
+	\input{resources/development.tex}
 	\newpage
-	\input{conclusions.tex}
+	\input{resources/conclusions.tex}
 
 	\printbibliography[nottype=online, title=Bibliography]
 	\printbibliography[type=online, title=Sitography]

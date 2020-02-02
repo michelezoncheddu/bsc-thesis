@@ -69,8 +69,8 @@ An example: when the device pitches up 90$^{\circ}$ its pitch and yaw gimbals be
 This is a well-known problem for animating rotations that can be solved by adding a fourth gimbal actively driven by a motor so as to maintain a large angle between roll and yaw gimbal axes \cite{Bie99}, by mounting the inertial sensors directly to the body of the device (\textit{strapdown systems}) \cite[3]{Tit04}, or by representing rotations using quaternions instead of Euler angles.
 
 \subsection{Quaternions}
-Quaternions are four-dimensional entities that extend the complex numbers, that represent elements of $\mathbb{R}^4$. Compared to Euler angles they are simpler to compose and avoid the problem of gimbal lock. Compared to rotation matrices they are more compact, more numerically stable, and more efficient (more than twice as efficient as matrices on memory, and the quaternion multiplication is more than 1.5 times faster than matrix multiplication \cite{Gol10}).\\
-As it represents an element of $\mathbb{R}^4$, a quaternion can be written as
+Quaternions\footnote{Invented in 1843 by the famous mathematical physicist William Rowan Hamilton, have been already discovered by Gauss in 1819, but this work was not published until 1900 \cite{Puj12}.} are four-dimensional entities that extend the complex numbers, that represent elements of $\mathbb{R}^4$ \cite{Ham47}. Compared to Euler angles they are simpler to compose and avoid the problem of gimbal lock. Compared to rotation matrices they are more compact, more numerically stable, and more efficient (more than twice as efficient as matrices on memory, and the quaternion multiplication is more than 1.5 times faster than matrix multiplication \cite{Gol10}).\\
+As it represents an element of $\mathbb{R}^4$, a quaternion can be written as:
 
 \begin{center}
 	$q = (q_0, q_1, q_2, q_3)$
@@ -82,14 +82,14 @@ where $q_0$, $q_1$, $q_2$, and $q_3$ are real numbers, but is generally represen
 	$\textbf{q} = q_0 + \textbf{i}q_1 + \textbf{j}q_2 + \textbf{k}q_3$
 \end{center}
 
-where \textbf{i}, \textbf{j} and \textbf{k} are the standard orthonormal basis in $\mathbb{R}^3$ \cite{Kui99}; it always follows the fundamental formula of quaternion algebra\footnote{On October 16, 1843, the inventor of the quaternions William Rowan Hamilton was taking a walk with his wife along the Broom Bridge, in Dublin, when in a flash of genius the concepts behind quaternions took shape in his mind, and he carved into the bridge the formula.}
+where \textbf{i}, \textbf{j} and \textbf{k} are the standard orthonormal basis in $\mathbb{R}^3$ \cite{Kui99}; it always follows the fundamental formula of quaternion algebra:
 
 \begin{center}
 	$\textbf{i}^2 = \textbf{j}^2 = \textbf{k}^2 = \textbf{ijk} = -1$
 \end{center}
 
-In the project quaternions are necessary because the Madgwick filter heavily relies on them \cite{Mad10}, and also the 3D representation through Three.js uses them.\\
-How to use quaternions for rotations?
+Algebra behind rotations with quaternions will not be explained due to its complexity deemed too high for this document's purposes, but it can be found in several math books, such as \cite[127-134]{Kui99}.\\
+Nevertheless, quaternions in the project are fundamental because the Madgwick filter \cite{Mad10} and the 3D representation through Three.js heavily relies on them.
 
 \subsection{Rotation matrix}
 In two dimensions, a rotation matrix $R \in \mathbb R^{2 \times 2}$ is a matrix that is used to perform a rotation in Euclidean space. Given a vector $\vec u \in \mathbb R^2$ and an angle $\theta \in \mathbb R$, the vector $\vec u$ rotated through an angle $\theta$ can be written as $R(\theta) \vec u$.\\

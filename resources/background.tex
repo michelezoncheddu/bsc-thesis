@@ -3,9 +3,10 @@ This chapter describes the hardware and software tools used in the project.
 
 \section{Hardware}
 \subsection{Particle Photon}
-The Particle Photon is a tiny board (36.58mm $\times$ 20.32mm $\times$ 4.32mm in our configuration, weighing in at 5 grams) specifically designed for IoT\footnote{Internet of Things: a system of typically embedded devices that connects to the Internet and to each other, without requiring human-to-human or human-to-computer interaction \cite{WikipediaIoT}. There's still no baseline or standard definition, which is why IEEE is asking for suggestions to the community to provide it \cite{IEEEIoT}.} projects \cite{ParticlePhoton}, based on a relatively powerful but power efficient microcontroller of the STM32 ARM Cortex M3 family, with integrated Wi-Fi and the ability to interface itself with cloud services offered by Particle.\\
-Unfortunately, the integrated Wi-Fi module was not powerful enough to ensure a reliable connection in the tested scenarios, causing frequent disconnections. An Airgain's IPEX antenna, easily pluggable to the Photon through a U.FL connector, has allowed to achieve a more stable connection.
-The code deployment can be performed seamlessly through a web-based IDE, that compiles and flashes the code to the selected device OTA (Over-The-Air). It is also possible to control the real-time device's status through a web-based too console, that allows to flash the firmware to a specific version (downgrades are trickier than upgrades, especially OTA), and displays graphs for data such Wi-Fi's signal strength and quality, round trip time and memory usage.
+Particle Photon is a tiny board (36.58mm $\times$ 20.32mm $\times$ 4.32mm in our configuration, weighing in at 5 grams) specifically designed for Internet of Things (IoT)\footnote{A system of typically embedded devices that connects to the Internet and to each other, without requiring human-to-human or human-to-computer interaction \cite{WikipediaIoT}. There's still no baseline or standard definition, which is why IEEE is asking for suggestions to the community to provide it \cite{IEEEIoT}.} projects \cite{ParticlePhoton}, based on a relatively powerful but power efficient microcontroller of the STM32 ARM Cortex M3 family, with integrated Wi-Fi and the ability to interface itself with cloud services offered by Particle.
+
+Unfortunately, the integrated Wi-Fi module has not been powerful enough to ensure a reliable connection in the tested scenarios, causing frequent disconnections. An Airgain's IPEX antenna, easily pluggable to the Photon through a U.FL connector, has allowed to achieve a more stable connection.
+The code deployment can be performed seamlessly through a web-based IDE, that compiles and flashes the code to the selected device Over-The-Air (OTA). It is also possible to control the real-time device's status through a web-based console, that allows to flash the firmware to a specific version (downgrades are trickier than upgrades, especially OTA), and displays graphs for data such Wi-Fi's signal strength and quality, round trip time and memory usage.
 
 \begin{center}
 	\begin{figure}[ht]
@@ -15,7 +16,9 @@ The code deployment can be performed seamlessly through a web-based IDE, that co
 \end{center}
 
 \subsection{Sensors}
-The SparkFun's sensor stick used in the project is a 9DoF (Degrees of Freedom) MARG (Magnetic, Angular Rate and Gravity) MEMS (Micro-Electro-Mechanical Systems) sensor. Its inertial module is the STMicroelectronics's LSM9DS1 integrated circuit, that features a digital linear acceleration sensor a digital angular rate sensor and a digital magnetic sensor: each one can make measurements from $x$, $y$ and $z$ axes, and that's where the 9 degrees of freedom came from. The stick has been connected to the Photon through the I$^2$C serial bus interface. Its compact size and power efficiency make it ideal for embedded systems \cite{SensorDatasheet}.
+The SparkFun's sensor stick used in the project is a 9 Degrees of Freedom (9DoF) Magnetic, Angular Rate and Gravity (MARG) Micro-Electro-Mechanical Systems (MEMS) sensor. Its inertial module is the STMicroelectronics's LSM9DS1 integrated circuit, that features a digital linear acceleration sensor, a digital angular rate sensor and a digital magnetic sensor: each one can take measurements from $x$, $y$ and $z$ axes, and that's where the 9 degrees of freedom come from.
+
+The stick has been connected to the Photon through the I$^2$C serial bus interface. Its compact size and power efficiency make it ideal for embedded systems \cite{SensorDatasheet}.
 
 \begin{center}
 	\begin{figure}[ht]
@@ -27,8 +30,9 @@ The SparkFun's sensor stick used in the project is a 9DoF (Degrees of Freedom) M
 \section{Software}
 
 \subsection{Node.js}
-Node.js is an open-source asynchronous event-driven JavaScript runtime environment that executes code outside of a browser, built on Google Chrome's V8 JavaScript engine \cite{Node.js}.\\
-To put it simply, a synchronous execution environment needs to wait to one task to finish before moving to another; asynchronous execution, on the contrary, allows to move to another task before the previous one finishes. In a network context (typically I/O bound), for a single-threaded software (like Node.js) a asynchronous (non-blocking) I/O (input/output) method allows to register the clients' requests, wait for until the reply is available, and then call the related callback, allowing faster replies to the clients, compared to synchronous (blocking) I/O.
+Node.js is an open-source asynchronous event-driven JavaScript runtime environment that executes code outside of a browser, built on Google Chrome's V8 JavaScript engine \cite{Node.js}.
+
+To put it simply, a synchronous execution environment needs to wait to one task to finish before moving to another; asynchronous execution, on the contrary, allows to move to another task before the previous one has finished. In a typically input/output (I/O) bound context, (like the network), for a single-threaded software (like Node.js) an asynchronous (non-blocking) I/O method allows to register the clients' requests, wait until the reply is available, and then call the related callback. This allows faster replies to the clients, compared to synchronous (blocking) I/O.
 
 \subsection{Express.js}
 Express.js, or simply Express, is a minimalist, open-source web framework for Node.js, designed for building web applications and APIs \cite{Express.js}. Its main feature is the routing mechanism: it allows to specify a callback function called when the application receives a request to the specified route and HTTP method. For example, using an Express \texttt{app} object, \texttt{app.get()} would handle GET requests, \texttt{app.post()} would handle POST ones, and so on.
@@ -37,13 +41,16 @@ Express.js, or simply Express, is a minimalist, open-source web framework for No
 Three.js is a JavaScript library for creating animated 3D graphics in a web browser. Three.js uses WebGL (and simplifies its API) for creating GPU-accelerated 3D animations within web browsers without relying on proprietary plugins; in fact, Three.js is fully open-source.
 
 \subsection{MQTT}
-MQTT (Message Queue Telemetry Transport) is a machine-to-machine (M2M)/"Internet of Things" connectivity protocol \cite{MQTT}. MQTT was designed as an extremely lightweight publish/subscribe messaging transport, and can be supported by any network protocol that provides ordered, lossless and bi-directional connections \cite{MQTTDoc} (typically TCP/IP).\\
-The MQTT protocol defines two types of network entities: a message broker (Mosca in the project) and a number of clients. An MQTT broker is a server that receives all messages from the clients and then routes the messages to the appropriate destination clients \cite{KnowMQTT}. An MQTT client is any device that runs an MQTT library and connects to an MQTT broker over a network \cite{ClientBroker}.\\
+Message Queue Telemetry Transport (MQTT) is a machine-to-machine (M2M)/IoT connectivity protocol \cite{MQTT}. MQTT was designed as an extremely lightweight publish/subscribe messaging transport, and can be supported by any network protocol that provides ordered, lossless and bi-directional connections (typically TCP/IP) \cite{MQTTDoc}.
+
+The MQTT protocol defines two types of network entities: a message broker (Mosca in the project) and a number of clients. An MQTT broker is a server that receives all messages from the clients and then routes the messages to the appropriate destination clients \cite{KnowMQTT}. An MQTT client is any device that runs an MQTT library and connects to an MQTT broker over a network \cite{ClientBroker}.
+
 Information is organized in a hierarchy of topics. When a publisher has a new item of data to distribute, it sends a control message with the data to the connected broker. The broker then distributes the information to any clients that have subscribed to that topic. The publisher does not need to have any data on the number or locations of subscribers, and subscribers in turn do not have to be configured with any data about the publishers.
 
 \subsection{MongoDB}
-MongoDB is a general purpose, document-based, distributed database \cite{MongoDB}. Classified as a NoSQL database, stores documents in a JSON-like format with schema. MongoDB belongs to the category of document-oriented databases: the smallest unit of storage is a document; documents are stored in a collection, which in turn make up a database. Document are analogous to rows in a SQL table, but with one big difference: not every document needs to have the same structure. Another feature of MongoDB is that fields in a document can contain arrays and or sub-documents (sometimes called nested or embedded documents).\\
-MongoDB stores data records as BSON documents. BSON is a binary representation of JSON documents, though it contains more data types than JSON \cite{BSONSpec}.
+MongoDB is a general purpose, document-based, distributed database \cite{MongoDB}. Classified as a NoSQL database, it stores documents in a JSON-like format with schema. MongoDB belongs to the category of document-oriented databases: the smallest unit of storage is a document; documents are stored in collections, which in turn make up a database. Documents are analogous to rows in a SQL table, but with one big difference: documents may have different structures. Another feature of MongoDB is that fields in a document can contain arrays and or sub-documents (sometimes called nested or embedded documents).
+
+MongoDB stores data records as BSON documents. BSON is a binary representation of JSON documents, although it contains more data types than JSON \cite{BSONSpec}.
 
 \subsection{TensorFlow}
 \dots
@@ -52,10 +59,12 @@ MongoDB stores data records as BSON documents. BSON is a binary representation o
 This section describes the rotation formalisms used in the project.
 
 \subsection{Tait–Bryan angles}
-Tait–Bryan angles (also called nautical angles or \textit{yaw, pitch and roll}) are a variant of Euler angles, normally used for aerospace applications (in which they are often called Euler angles). Euler angles are a minimal representation (a set of three numbers) of relative orientation. This set of three angles describes a sequence of rotations about the axes of a reference frame. There are, however, sets that describe the same orientation: different combinations of $x$, $y$, and $z$ axes lead to different Euler angles \cite{Rob20}.\\
-The only difference is that Tait–Bryan angles represent rotations about three distinct axes (e.g. $x$-$y$-$z$), while proper Euler angles use the same axis for both the first and third elemental rotations (e.g. $z$-$x$-$z$) \cite{WikipediaEulerAngles}.\\
+Tait–Bryan angles (also called nautical angles or \textit{yaw, pitch and roll}) are a variant of Euler angles, normally used for aerospace applications (wherein they are often called Euler angles). Euler angles are a minimal representation (a set of three numbers) of relative orientation. This set of three angles describes a sequence of rotations about the axes of a reference frame. There are, however, sets that describe the same orientation: different combinations of $x$, $y$, and $z$ axes lead to different Euler angles \cite{Rob20}.
+
+The only difference is that Tait–Bryan angles represent rotations about three distinct axes (e.g. $x$-$y$-$z$), while proper Euler angles use the same axis for both the first and third elemental rotations (e.g. $z$-$x$-$z$) \cite{WikipediaEulerAngles}.
+
 Once fixed a reference frame, \textit{yaw, pitch and roll} represent the rotation angle around the $z$, $y$, and $x$ axis, respectively.
-If the rotation occurs about the axes of the original coordinate system, which remains motionless, the rotation is called \textit{extrinsic}, and when it occurs about the axes of the rotating coordinate system, which changes its orientation after each elemental rotation, the rotation is called \textit{intrinsic}. It's interesting to know that $z$-$y$-$x$ intrinsic rotations correspond to $x$-$y$-$z$ extrinsic ones.
+If the rotation occurs about the axes of the original coordinate system, which remains motionless, the rotation is called \textit{extrinsic}, and when it occurs about the axes of the rotating coordinate system, which changes its orientation after each elemental rotation, the rotation is called \textit{intrinsic}. It's interesting to know that $z$-$y$-$x$ intrinsic rotations correspond to $x$-$y$-$z$ extrinsic ones, and the same applies to every reversed-order rotation.
 
 \begin{center}
 	\begin{figure}[ht]
@@ -64,35 +73,38 @@ If the rotation occurs about the axes of the original coordinate system, which r
 	\end{figure}
 \end{center}
 
-All Euler angles share a problem called \textit{gimbal\footnote{A \textit{gimbal} is a pivoted support that allows the rotation of an object about a single axis.} lock\footnote{The word lock is misleading: no gimbal is restrained.}}, that occurs when the orientation of the sensor cannot be uniquely represented, and causes a loss of a degree of freedom \cite{Dil18}.\\
-An example: when the device pitches up 90$^{\circ}$ its pitch and yaw gimbals become aligned, and changes to roll and yaw apply the same rotation to the device \cite[68]{Tit04}.\\
-This is a well-known problem for animating rotations that can be solved by adding a fourth gimbal actively driven by a motor so as to maintain a large angle between roll and yaw gimbal axes \cite{Bie99}, by mounting the inertial sensors directly to the body of the device (\textit{strapdown systems}) \cite[3]{Tit04}, or by representing rotations using quaternions instead of Euler angles.
+Representations with Euler angles share a problem called \textit{gimbal\footnote{A \textit{gimbal} is a pivoted support that allows the rotation of an object about a single axis.} lock\footnote{The word lock is misleading: no gimbal is restrained.}}, that occurs when the orientation of the sensor cannot be uniquely represented, and causes a loss of a degree of freedom \cite{Dil18}.
+
+An example: when the device pitches up 90$^{\circ}$ its pitch and yaw gimbals become aligned, and changes to roll and yaw apply the same rotation to the device \cite[68]{Tit04}.
+
+This is a well-known problem for animating rotations, and it can be solved by adding a fourth gimbal actively driven by a motor so as to maintain a large angle between roll and yaw gimbal axes \cite{Bie99}, by mounting the inertial sensors directly to the body of the device (\textit{strapdown systems}) \cite[3]{Tit04}, or by representing rotations using quaternions instead of Euler angles.
 
 \subsection{Quaternions}
-Quaternions\footnote{Invented in 1843 by the famous mathematical physicist William Rowan Hamilton, have been already discovered by Gauss in 1819, but this work was not published until 1900 \cite{Puj12}.} are four-dimensional entities that extend the complex numbers, that represent elements of $\mathbb{R}^4$ \cite{Ham47}. Compared to Euler angles they are simpler to compose and avoid the problem of gimbal lock. Compared to rotation matrices they are more compact, more numerically stable, and more efficient (more than twice as efficient as matrices on memory, and the quaternion multiplication is more than 1.5 times faster than matrix multiplication \cite{Gol10}).\\
+Quaternions\footnote{Invented in 1843 by the famous mathematical physicist William Rowan Hamilton, they had been already described by Gauss in 1819, but his work was not published until 1900 \cite{Puj12}.} are four-dimensional entities that extend the complex numbers, and represent elements of $\mathbb{R}^4$ \cite{Ham47}. Compared to Euler angles, they are simpler to compose and avoid the problem of gimbal lock. Compared to rotation matrices, they are more compact, more numerically stable, and more efficient (more than twice as efficient as matrices on memory, and the quaternion multiplication is more than 1.5 times faster than matrix multiplication \cite{Gol10}).
+
 As it represents an element of $\mathbb{R}^4$, a quaternion can be written as:
 
 \begin{center}
 	$q = (q_0, q_1, q_2, q_3)$
 \end{center}
-
-where $q_0$, $q_1$, $q_2$, and $q_3$ are real numbers, but is generally represented in this way:
+where $q_0$, $q_1$, $q_2$, and $q_3$ are real numbers, but it is generally represented this way:
 
 \begin{center}
 	$\textbf{q} = q_0 + \textbf{i}q_1 + \textbf{j}q_2 + \textbf{k}q_3$
 \end{center}
-
 where \textbf{i}, \textbf{j} and \textbf{k} are the standard orthonormal basis in $\mathbb{R}^3$ \cite{Kui99}; it always follows the fundamental formula of quaternion algebra:
 
 \begin{center}
 	$\textbf{i}^2 = \textbf{j}^2 = \textbf{k}^2 = \textbf{ijk} = -1$
 \end{center}
 
-Algebra behind rotations with quaternions will not be explained due to its complexity deemed too high for this document's purposes, but it can be found in several math books, such as \cite[127-134]{Kui99}.\\
-Nevertheless, quaternions in the project are fundamental because the Madgwick filter \cite{Mad10} and the 3D representation through Three.js heavily relies on them.
+Algebra behind quaternions rotations will not be treated, because its complexity has been deemed too high for this document's purposes, but it can be found in several math books, such as \cite[127-134]{Kui99}.
+
+Nevertheless, quaternions are fundamental in the project since the Madgwick filter \cite{Mad10} and the 3D representation through Three.js heavily relies on them.
 
 \subsection{Rotation matrix}
-In two dimensions, a rotation matrix $R \in \mathbb R^{2 \times 2}$ is a matrix that is used to perform a rotation in Euclidean space. Given a vector $\vec u \in \mathbb R^2$ and an angle $\theta \in \mathbb R$, the vector $\vec u$ rotated through an angle $\theta$ can be written as $R(\theta) \vec u$.\\
+In two dimensions, a rotation matrix $R \in \mathbb R^{2 \times 2}$ is a matrix that is used to perform a rotation in Euclidean space. Given a vector $\vec u \in \mathbb R^2$ and an angle $\theta \in \mathbb R$, the vector $\vec u$ rotated through an angle $\theta$ can be written as $R(\theta) \vec u$.
+
 The matrix
 
 \[
@@ -103,7 +115,6 @@ The matrix
 	\end{pmatrix}}
 \]
 rotates points in the $xy$-plane counterclockwise in a \textit{right-handed coordinate system} ($y$ counterclockwise from $x$) through an angle $\theta$ with respect to the $x$ axis about the origin of a two-dimensional Cartesian coordinate system. To perform the rotation of a point $p$ with coordinates ($x$, $y$), it should be written as column vector, and multiplied by the matrix $R$:
-\bigbreak
 
 \[
 	p_{rotated} = Rp =
@@ -126,7 +137,7 @@ rotates points in the $xy$-plane counterclockwise in a \textit{right-handed coor
 How to represent \textit{yaw, pitch and roll}?
 \bigbreak
 
-A \textit{yaw} is a CCW rotation of $\alpha$ on the $z$-axis. The rotation matrix is
+A \textit{yaw} is a counterclockwise (CCW) rotation of $\alpha$ on the $z$-axis. The rotation matrix is
 \[
 	R_z(\alpha) =
 	\begin{pmatrix}
@@ -165,18 +176,21 @@ A \textit{roll} is a CCW rotation of $\gamma$ on the $x$-axis. The rotation matr
 		-\sin\beta & \cos\beta \sin\gamma & \cos\beta \cos\gamma
 	\end{pmatrix}
 \end{gather*}
-It is important to note that $R(\alpha, \beta, \gamma)$ performs the roll first, then the pitch, and finally the yaw. If the order of these operations is changed, a different rotation matrix would result \cite{Lav06}.\\
+It is important to note that $R(\alpha, \beta, \gamma)$ performs the roll first, then the pitch, and finally the yaw. If the order of these operations is changed, a different rotation matrix results \cite{Lav06}.
+
 Given an acceleration vector $\vec a$, the rotated one is $\vec a_r = R(\alpha, \beta, \gamma) \vec a$.
 
 \subsection{Spherical coordinates}
 \dots
 
 \section{Filters}
-Motion representation can be obtained through accelerometer reading within the $x$, $y$ and $z$ axes, that make up an acceleration vector.\\
-MEMS sensors are known to be very noisy, especially when working at high reading frequencies \cite[7]{Mat08}, and the noise is of a specific type, the Additive White\footnote{White noise is a random signal with constant amplitude across the whole frequency spectrum.} Gaussian\footnote{Noise having a probability density function equal to that of the normal distribution, which is also known as the Gaussian distribution \cite{WikipediaGaussianNoise}.} Noise (AWGN) \cite{Yas03}. An effective way to remove AWGN is to use the Kalman filter \cite{Ko07, Sär15}, because it assumes that the errors are Gaussian \cite{Kal60}.
+Motion representation can be obtained through accelerometer reading within the $x$, $y$ and $z$ axes, that make up an acceleration vector.
+
+MEMS sensors are known to be very noisy, especially when working at high reading frequencies \cite[7]{Mat08}, and the noise is of a specific type, the Additive White\footnote{White noise is a random signal with constant amplitude across the whole frequency spectrum.} Gaussian\footnote{Noise having a probability density function equal to that of the normal distribution, which is also known as the Gaussian distribution \cite{WikipediaGaussianNoise}.} Noise (AWGN) \cite{Yas03}. An effective way to remove AWGN is to use the Kalman filter \cite{Ko07, Sär15}, as it assumes that the errors are Gaussian \cite{Kal60}.
 
 \subsection{Kalman filter}
-Kalman filtering, also known as linear quadratic estimation (LQE) \cite[ix]{Ma19}, is an efficient recursive algorithm that uses a series of measurements observed over time, containing statistical noise and other inaccuracies, and produces estimates of unknown variables \cite[7-8]{Ma19} (the internal state of a linear dynamic system\footnote{Linear dynamic systems are systems in which its evolution is described by a linear function and hence satisfies the superposition principle.} \cite[47]{Ma19}) that tend to be more precise than those based on a single measurement alone, by using Bayesian inference and estimating a joint probability distribution over the variables for each timeframe \cite[8]{Ma19}.\\
+Kalman filtering, also known as linear quadratic estimation (LQE) \cite[ix]{Ma19}, is an efficient recursive algorithm that uses a series of measurements observed over time, containing statistical noise and other inaccuracies, and produces estimates of unknown variables \cite[7-8]{Ma19} (the internal state of a linear dynamic system\footnote{Linear dynamic systems are systems in which its evolution is described by a linear function and hence satisfies the superposition principle.} \cite[47]{Ma19}) that tend to be more precise than those based on a single measurement alone, by using Bayesian inference and estimating a joint probability distribution over the variables for each timeframe \cite[8]{Ma19}.
+
 Kalman filter is most often conceptualized as two distinct phases \cite[12-13]{Ma19}:
 
 \begin{enumerate}
@@ -187,7 +201,7 @@ Kalman filter is most often conceptualized as two distinct phases \cite[12-13]{M
 The Kalman filter has numerous applications in technology, like navigation and control of vehicles, particularly aircraft, spacecraft and dynamically positioned ships \cite{WikipediaKalman}.
 
 \subsection{Madgwick filter} \label{Madgwick filter}
-\dots
+In 2009 Sebastian O. H. Madgwick developed an orientation filter for IMU (6DoF, tri-axis gyroscope and accelerometer) and MARG (9DoF, IMU + tri-axis magnetometer) sensors. 
 
 \section{Neural networks}
 \dots

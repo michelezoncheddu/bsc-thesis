@@ -71,7 +71,7 @@ If the rotation occurs about the axes of the original coordinate system, which r
 		\caption{Yaw ($\psi$), pitch ($\theta$) and roll ($\varphi$) angles for an aircraft \cite{WikimediaPlane}.}
 	\end{figure}
 \end{center}
-Representations with Euler angles share a problem called gimbal\footnote{A \textit{gimbal} is a pivoted support that allows the rotation of an object about a single axis.} lock\footnote{The word lock is misleading: no gimbal is restrained.}, that occurs when the orientation of the sensor cannot be uniquely represented, and causes a loss of a degree of freedom \cite{Dil18}.
+Representations with Euler angles share a problem called \textit{gimbal}\footnote{A \textit{gimbal} is a pivoted support that allows the rotation of an object about a single axis.} \textit{lock}\footnote{The word lock is misleading: no gimbal is restrained.}, that occurs when the orientation of the sensor cannot be uniquely represented, and causes a loss of a degree of freedom \cite{Dil18}.
 
 An example: when the device pitches up 90$^{\circ}$ its pitch and yaw gimbals become aligned, and changes to roll and yaw apply the same rotation to the device \cite[68]{Tit04}.
 
@@ -232,7 +232,13 @@ The low computational load reduces the hardware and power necessary for inertial
 Machine learning is a subfield of computer science that studies algorithms and statistical models to construct computer programs that automatically improve with experience \cite{Mit97}. Machines don't really learn\footnote{The name ``machine learning" was coined by Arthur Samuel in 1959, while working for IBM on computers that learned how to play checkers when given only the rules of the game \cite{Sam59}.}, but typically build a mathematical function that produces the desired output when applied to a collection of inputs, called \textit{training data}, and this function is used to make predictions on inputs not encountered during training. The ability to make accurate predictions on new data is called \textit{generalization} \cite{Hay08}.
 \bigbreak
 
-One of the most famous statistical model for machine learning is the artificial neural network, commonly referred as ``neural network''. The term \textit{neural} suggest the parallelism with the biological neural networks that form animal brains, since the Rosenblatt's \textit{perceptrons} was born to mimic certain part of the neuron, such as dendrites, that receive the electrochemical stimulation from other neural cells, and axons, that propagates it.
+There are two kinds of ``learning'' processes:
+\begin{itemize}
+	\item \textit{supervised}, when the training data is labeled or classified with the correct answer, and the network can use it to improve its performance. The goal is to minimize a loss function, which quantifies the training error; the networks are most often trained with the \textit{backpropagation}, a gradient-descent algorithm that computes the gradient of the loss function, to change them accordingly to the training;
+	\item \textit{unsupervised}, when the training data is neither labeled or classified, and the network has to find by itself the way to categorize the data. In this case, the performance measurement is task-independent \cite{Hay08}.
+\end{itemize}
+
+One of the most famous statistical model for machine learning is the artificial neural network, commonly referred as ``neural network''. It's composed of multiple layers of inter-connected nodes. The term \textit{neural} suggest the parallelism with the biological neural networks that form animal brains, since the Rosenblatt's \textit{perceptron}\footnote{After the McCulloch and Pitt’s neuron, the perceptron was the next step towards the neural networks.} was born to mimic certain part of the neuron, such as dendrites, that receive the electrochemical stimulation from other neural cells, and axons, that propagates it.
 
 The building block of the neural networks is the \textit{neuron}, an information-processing unit that works in this way: takes the inputs from weighted links, adds the weighted input signals together, and finally uses the sum as an input for the activation function; this function's output can be an input for another neuron, or part of the network's output.
 

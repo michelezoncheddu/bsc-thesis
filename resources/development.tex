@@ -103,14 +103,21 @@ The yaw's measurement was particularly affected by rotations around the Earth's 
 	\centering
 	\begin{tabular}{c|c c}
 	\textbf{Pitch} ($^{\circ}$) & \textbf{Mean error} ($^{\circ}$) & \textbf{Standard deviation} ($^{\circ}$) \\ \hline
-	0                           & -47.12                           & 0.94                                     \\
-	20                          & -47.67                           & 1.88                                     \\
-	40                          & -51.14                           & 1.45                                     \\
-	60                          & -58.14                           & 1.73                                     \\
-	80                          & -57.80                           & 0.75
+	0                           & 47.12                            & 0.94                                     \\
+	20                          & 47.67                            & 1.88                                     \\
+	40                          & 51.14                            & 1.45                                     \\
+	60                          & 58.14                            & 1.73                                     \\
+	80                          & 57.80                            & 0.75
 	\end{tabular}
 	\caption{Yaw errors after a 360$^{\circ}$ rotation with different pitch angles.}
 \end{table}
+
+\begin{center}
+	\begin{figure}[ht]
+		\makebox[\textwidth]{\includegraphics[width=0.55\paperwidth]{img/yaw_errors.pdf}}
+		\caption{Box plot of yaw errors.}
+	\end{figure}
+\end{center}
 
 Small yaw variations were also noticed with pitch-only movements: after a 360$^{\circ}$ rotation, the mean error was 0.47$^{\circ}$ with a standard deviation of 0.11$^{\circ}$.
 
@@ -175,105 +182,105 @@ The current data flow is illustrated by the schema:
 
 \begin{center}
 	\begin{figure}[ht]
-		\makebox[\textwidth]{\includegraphics[width=0.65\paperwidth]{img/data_fusion.png}}
+		\makebox[\textwidth]{\includegraphics[width=0.65\paperwidth]{img/data_fusion.pdf}}
 		\caption{Current data fusion schema.}
 	\end{figure}
 \end{center}
 
 \section{Time series classification}
-Standard feedforward neural networks are not suitable for time series classification tasks, because they are not \textit{shift-invariant} (in this case, time-invariant).
-
-\textit{Shift-invariance} means that different displacements of the features in the pattern don't affect the prediction. For time series pattern, this allows the network to classify a pattern regardless of its start time.
+Standard feedforward neural networks are not suitable for time series classification tasks, because they are not \textit{shift-invariant} (in this case, time-invariant). For time series patterns, this allows the network to classify a pattern regardless of its start time.
 \bigbreak
 
-In this work, two networks have been chosen, and their performance compared.
+TODO: model validation: how was the data collected and split?
 \bigbreak
 
-TODO: model validation: how was the data split? 
-
-\subsection{Time delay neural networks}
-Time delay neural network (TDNN) is one of the simplest neural network that provides \textit{shift-invariant} pattern classification. TDNNs were invented in 1989 to classify phonemes in speech signals for automatic speech recognition; because the TDNN recognizes phonemes independently of their position in time, it significantly improved the performance over static classification \cite{Wai89}.
+In this work, two network's models have been chosen, and their performance compared. The following part explains how the model selection was done.
 \bigbreak
 
-TDNNs are most often implemented by the machine learning frameworks with 1-dimensional convolutional neural network (CNN).\\
-2-dimensional CNNs are widely used for image classification, where the two dimensions are the $x$ and the $y$ axis; in time series classification, of course, the only dimension is the time.
+\subsection{Time delay neural network}
+\subsubsection{Topology and activation functions}
+The model selection started from the simplest topology: an input layer with data normalization, a convolutional hidden layer with a \textit{ReLU} activation function, that performed better than \textit{tanh}, and an output layer for the pattern classification, with a \textit{softmax} function, to obtain values between 0 and 1, representing the probability of the classified pattern to belong to each possible class.
 \bigbreak
 
-Convolution is a linear mathematical operator defined as the integral of the product of two functions, that produces a third function; CNNs use convolution in place of general matrix multiplication \cite{Goo16}.
-\bigbreak
+\begin{center}
+	\begin{figure}[ht]
+		\makebox[\textwidth]{\includegraphics[width=0.35\paperwidth]{img/tdnn_topology.pdf}}
+		\caption{TDNN final topology.}
+	\end{figure}
+\end{center}
 
-TODO: convolution definition?
-\bigbreak
+\subsubsection{Features}
+Only three features were considered relevant for the training: the gravity-free accelerations values in the three axes. Some tests showed quickly that adding more features, like orientation, velocity data, or raw sensors data, made the network almost untrainable with this simple model.
 
-In CNNs, there are two types of layers:
-\begin{itemize}
-	\item the \textit{convolutional layer}, that through a fixed-size window, called \textit{kernel}, slides over the inputs and gives its outputs to the next layer. The kernel of \textit{filters} computes the dot product between its weights and the inputs (this process is called \textit{convolution}), and projects the output in a n-dimensional space, where n is the number of output filters in the convolution;
-	\item the \textit{pooling layer}, that takes the maximum value of the input's patch (max-pooling) or the average (average-pooling), performing a down-sampling.
-\end{itemize} 
-The \textit{shift-invariance} is ensured by the fact that the kernel's weights are shared across the entire layer's input, so they will learn independently of their position. The kernel's shift over the input after every step is called \textit{stride}, and it's typically 1, but it can be higher to perform down-sampling.
-\bigbreak
-
-TODO: TDNN image (link in the source code) %commons.wikimedia.org/wiki/File:DiagramTDNN_english.png
-\bigbreak
-
-The model selection started from the simplest topology: an input layer with data normalization, a convolutional hidden layer with a \textit{ReLU} activation function, and an output layer for the pattern classification, with a \textit{softmax} function.
-\bigbreak
-
-TODO: network topology image
-\bigbreak
-
-The features considered relevant for the training were only three: the accelerations in the three axes. Some trials showed quickly that adding features like orientation, velocity data or worse raw sensors data, made the network almost untrainable with this simple model.
-\bigbreak
-
-The search for the two most important hyperparameters, the \textit{kernel} size and the number of \textit{filters}, has been performed through a grid search.
+\subsubsection{Hyperparameters}
+The search for the two most important hyperparameters, the \textit{kernel} size and the number of \textit{filters}, has been performed through a \textit{grid search}. For each table's entry, the network has been tested 10 times, with shuffled data between testing and validation set for each run. Outliers have been omitted from the average.
 
 \begin{table}[ht]
 	\centering
 	\begin{tabular}{cccccc}
 									  &                         & \multicolumn{4}{c}{\textbf{Kernel size}} \\
-									  & \multicolumn{1}{c|}{}   & 3       & 5       & 7       & 9      \\ \cline{2-6} 
-	\multirow{7}{*}{\textbf{Filters}} & \multicolumn{1}{c|}{3}  & 0,9000  & 0,9257  & 0,9500  & 0,9825 \\
-									  & \multicolumn{1}{c|}{5}  & 0,9450  & 0,9550  & 0,9850  & 0,9900 \\
-									  & \multicolumn{1}{c|}{7}  & 0,9980  & 0,9990  & 0,9987  & 0,9990 \\
-									  & \multicolumn{1}{c|}{9}  & 0,9793  & 0,9900  & 0,9965  & 0,9987 \\
-									  & \multicolumn{1}{c|}{11} & 0,9806  & 0,9852  & 0,9959  & 0,9983 \\
-									  & \multicolumn{1}{c|}{13} & 0,9694  & 0,9953  & 0,9991  & 0,9984 \\
-									  & \multicolumn{1}{c|}{15} & 0,9920  & 0,9988  & 0,9990  & 0,9990
+									  & \multicolumn{1}{c|}{}   & 3        & 5        & 7        & 9       \\ \cline{2-6} 
+	\multirow{7}{*}{\textbf{Filters}} & \multicolumn{1}{c|}{3}  & 90,00\%  & 92,57\%  & 95,00\%  & 98,25\% \\
+									  & \multicolumn{1}{c|}{5}  & 94,50\%  & 95,50\%  & 98,50\%  & 99,00\% \\
+									  & \multicolumn{1}{c|}{7}  & 98,80\%  & 99,00\%  & 99,87\%  & 99,90\% \\
+									  & \multicolumn{1}{c|}{9}  & 97,93\%  & 99,00\%  & 99,65\%  & 99,87\% \\
+									  & \multicolumn{1}{c|}{11} & 98,06\%  & 98,52\%  & 99,59\%  & 99,83\% \\
+									  & \multicolumn{1}{c|}{13} & 96,94\%  & 99,53\%  & 99,91\%  & 99,84\% \\
+									  & \multicolumn{1}{c|}{15} & 99,20\%  & 99,88\%  & 99,90\%  & 99,90\%
 	\end{tabular}
-	\caption{Training accuracy.}
+	\caption{Average training accuracy.}
 \end{table}
 
 \begin{table}[ht]
 	\centering
 	\begin{tabular}{cccccc}
-									  &                         & \multicolumn{4}{c}{\textbf{Kernel size}}    \\
-									  & \multicolumn{1}{c|}{}   & 3      & 5      & 7           & 9           \\ \cline{2-6} 
-	\multirow{7}{*}{\textbf{Filters}} & \multicolumn{1}{c|}{3}  & 0,7868 & 0,8250 & 0,9333      & 0,8833      \\
-								      & \multicolumn{1}{c|}{5}  & 0,8917 & 0,9373 & 0,9625      & 0,9553      \\
-									  & \multicolumn{1}{c|}{7}  & 0,9138 & 0,9892 & 0,9668      & 0,9625      \\
-									  & \multicolumn{1}{c|}{9}  & 0,9650 & 0,9829 & 0,9990      & overfitting \\
-									  & \multicolumn{1}{c|}{11} & 0,9560 & 0,9750 & 0,9875      & overfitting \\
-									  & \multicolumn{1}{c|}{13} & 0,9280 & 0,9450 & 0,9625      & overfitting \\
-									  & \multicolumn{1}{c|}{15} & 0,9400 & 0,9650 & overfitting & overfitting
+									  &                         & \multicolumn{4}{c}{\textbf{Kernel size}}       \\
+									  & \multicolumn{1}{c|}{}   & 3       & 5       & 7            & 9           \\ \cline{2-6} 
+	\multirow{7}{*}{\textbf{Filters}} & \multicolumn{1}{c|}{3}  & 77,68\% & 81,50\% & 92,33\%      & 87,33\%     \\
+								      & \multicolumn{1}{c|}{5}  & 87,17\% & 92,73\% & 95,25\%      & 94,53\%     \\
+									  & \multicolumn{1}{c|}{7}  & 90,38\% & 97,92\% & 95,68\%      & 95,25\%     \\
+									  & \multicolumn{1}{c|}{9}  & 95,50\% & 97,29\% & 98,00\%      & overfitting \\
+									  & \multicolumn{1}{c|}{11} & 94,60\% & 96,50\% & 97,75\%      & overfitting \\
+									  & \multicolumn{1}{c|}{13} & 91,80\% & 93,50\% & 95,25\%      & overfitting \\
+									  & \multicolumn{1}{c|}{15} & 93,00\% & 95,50\% & overfitting  & overfitting
 	\end{tabular}
-	\caption{Validation accuracy.}
+	\caption{Average validation accuracy.}
 \end{table}
-As shown in the tables, 9 and 7 were optimal values respectively for the number of filters and the kernel size, in particular:
+As shown in the tables, 9 and 7 were optimal values respectively for the number of filters and the kernel size: they gave the best result in the validation set, and in particular:
 \begin{itemize}
-	\item a number of filters lower than 7 and a kernel size lower than 5, were able to classify correctly only after a long and unstable training;
-	\item from 7 filters, the training curve was stable, and the overfitting occurred only from 15;
-	\item kernel sizes from 9 tended to overfit the network: the patterns were initially made by 22 samples, and the sliding window was be too big;
+	\item a number of filters up to 7 and a kernel size up to 5, made the network able to classify correctly only after a long and unstable training;
+	\item from 7 filters upwards, the training curve was stable, and the overfitting occurred only from 15;
+	\item kernel sizes from 9 upwards tended to overfit the network: the patterns were initially made of 22 samples, and the sliding window was be too big;
 	\item with filters bigger than 20, the overfitting was mitigable only with very low kernel sizes, but in that case the network was hard to train, and very easy to underfit.
 \end{itemize}
 More complex topologies were tried, but adding hidden layers only led the neural network to the overfitting.
 
-The next step was to achieve the maximum accuracy with less possible data, then the network was trained several times with different patterns' lengths:
-\bigbreak
+\begin{center}
+	\begin{figure}[ht]
+		\makebox[\textwidth]{\includegraphics[width=0.65\paperwidth]{img/overfitting.png}}
+		\caption{Overfitting with kernel size too high.}
+	\end{figure}
+\end{center}
 
-TODO: histogram (Word?)
-\bigbreak
+\begin{center}
+	\begin{figure}[ht]
+		\makebox[\textwidth]{\includegraphics[width=0.65\paperwidth]{img/fitting.png}}
+		\caption{Good fitting.}
+	\end{figure}
+\end{center}
 
-To keep under control the network complexity, a \textit{weight decay} approach has been used, within the range [0.001, 0.05].
+\subsubsection{More accuracy with less data}
+The next step was to achieve the maximum accuracy with less possible data. The network was trained several times with different patterns' lengths, and the best choice for a stable and accurate training has proved to be 15 samples per pattern, that with the 22 Hertz sampling means 682 milliseconds long patterns. Up to 12/13 samples, the network was not able to achieve good performance in training, being hard to train and underfitting, while from 17/18 samples and more, the network fitted the noise, so overfitted.
+
+\begin{center}
+	\begin{figure}[ht]
+		\makebox[\textwidth]{\includegraphics[width=0.68\paperwidth]{img/training_acc_samples.pdf}}
+		\caption{Training accuracy with pattern with different lengths.}
+	\end{figure}
+\end{center}
+
+\subsubsection{Regularization and optimization algorithms}
+The convolutional layer's weights are initialized randomly in the uniform range [-0.000001, 0.000001]. To keep under control the network complexity, a \textit{weight decay} approach has been used, with tested values in the range [0.001, 0.05].
 \bigbreak
 
 TODO: Why adam optimizer? (paper) Batch size? (useless?)

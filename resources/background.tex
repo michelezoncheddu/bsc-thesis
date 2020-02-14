@@ -222,7 +222,7 @@ The filter is based on an optimized gradient-descent algorithm that fuses togeth
 There are three interesting features \cite{Mad10}:
 \begin{itemize}
 	\item it is computationally inexpensive, thanks to the quaternion representation of rotation;
-	\item it is effective at relatively low sampling rates, e.g. 10 Hz. This is a big advantage, because Kalman-based filters may require sampling rates that exceed the bandwidth;
+	\item it is effective at relatively low sampling rates, e.g. 10 Hertz. This is a big advantage, because Kalman-based filters may require sampling rates that exceed the bandwidth;
 	\item its parameters can be changed according to the usage environment characteristics.
 \end{itemize}
 
@@ -262,3 +262,27 @@ There are three fundamentally different classes of network architectures \cite{H
 		\caption{A fully-connected feedforward neural network with two hidden layers.}
 	\end{figure}
 \end{center}
+
+\subsection{Time delay neural networks}
+Time delay neural network (TDNN) is one of the simplest neural network that provides \textit{shift-invariant} pattern classification. \textit{Shift-invariance} means that different displacements of the features in the pattern don't affect the prediction. TDNNs were invented in 1989 to classify phonemes in speech signals for automatic speech recognition; the fact that the TDNN recognizes phonemes independently of their position in time, significantly improved the performance over static classification \cite{Wai89}.
+\bigbreak
+
+TDNNs are most often implemented by the machine learning frameworks with 1-dimensional convolutional neural network (CNN).\\
+2-dimensional CNNs are widely used for image classification, where the two dimensions are the $x$ and the $y$ axis; in time series classification, of course, the only dimension is the time.
+\bigbreak
+
+Convolution is a linear mathematical operator defined as the integral of the product of two functions, that produces a third function; CNNs use convolution in place of general matrix multiplication \cite{Goo16}.
+\bigbreak
+
+TODO: convolution definition?
+\bigbreak
+
+In CNNs, there are two types of layers:
+\begin{itemize}
+	\item the \textit{convolutional layer}, that through a fixed-size window, called \textit{kernel}, slides over the inputs and gives its outputs to the next layer. The kernel of \textit{filters} computes the dot product between its weights and the inputs (this process is called \textit{convolution}), and projects the output in a n-dimensional space, where n is the number of output filters in the convolution;
+	\item the \textit{pooling layer}, that takes the maximum value of the input's patch (max-pooling) or the average (average-pooling), or other values by using different approaches, performing a down-sampling.
+\end{itemize} 
+The \textit{shift-invariance} is provided by the kernel's \textit{weights sharing}, that means that the same weights are used across the entire layer's input, so they will learn independently of their position. The kernel's shift over the input after every step is called \textit{stride}, and it's typically 1, but it can be higher to perform down-sampling.
+\bigbreak
+
+TODO: TDNN image (link in the source code) %commons.wikimedia.org/wiki/File:DiagramTDNN_english.png

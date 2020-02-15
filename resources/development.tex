@@ -177,7 +177,7 @@ Its removal is much harder, because requires to analyze how much current is flow
 	\end{figure}
 \end{center}
 
-\subsection{Final data schema}
+\subsection{Final data fusion schema}
 The current data flow is illustrated by the schema:
 
 \begin{center}
@@ -187,14 +187,41 @@ The current data flow is illustrated by the schema:
 	\end{figure}
 \end{center}
 
+\subsection{Smart pattern recording}
+Previously, the recording of a pattern for the training set was simply triggered by specific buttons in the web page, that once pressed, started immediately the recording. Since the recording time was quite short (500ms), it was difficult to start moving the toy exactly when the server started recording, because the movement could start too early or too late: both can cause data loss, but the second case is subtly more dangerous, including movements unrelated to the pattern inside the recording.
+
+To prevent unintended movements from being saved, the recording module was modified in this way: the buttons no more trigger the immediate start of the recording, but sends the server in a \textit{waiting} state, an intermediate state where it asynchronously waits the toy to being moved. When the toy is moved, the real recording starts, without any data loss.
+
+The motion detection is performed by the toy itself, and sent to the server through an attribute in the JSON object; unfortunately it has been found a slight delay between the real movement and its detection, empirically measured as 150ms, that corresponds to 3 packets, sent by the device but discarded by the server: to solve this problem, a small buffer has been included within the recording module, and these packets are punt in front of the ones that would be saved before.
+
+\begin{center}
+	\begin{figure}[ht]
+		\makebox[\textwidth]{\includegraphics[width=0.6\paperwidth]{img/wait.png}}
+		\caption{The recording module the waiting state.}
+	\end{figure}
+\end{center}
+Not all patterns need the same recording time: for example, the movement of the toy pushed forward is much smaller than the one where the toy is thrown against a pillow, where the toy is thrown by the hand first, then flies in the air until it reaches the pillow. To adapt the module to this eventuality, it has been added the possibility to change the duration of the recording. Nevertheless, not every neural network can deal with variable-length sequences.
+
 \section{Time series classification}
 Standard feedforward neural networks are not suitable for time series classification tasks, because they are not \textit{shift-invariant} (in this case, time-invariant). For time series patterns, this allows the network to classify a pattern regardless of its start time.
+
+\subsection{Dataset}
+For model training and validation, the dataset was composed of:
+\begin{itemize}
+	\item 100 patterns with the toy going \textit{forward} and 100 with the toy going \textit{backward};
+	\item 200 patterns of simulated \textit{flight};
+	\item 200 patterns with the \textit{still} toy;
+	\item 200 patterns of the toy carried while \textit{walking};
+	\item 200 patterns of the toy \textit{thrown} against a pillow.
+\end{itemize}
+The training and validation portions were respectively the 60\% and the 40\% of the total, and the entire dataset is shuffled before every training.
+
+The test set was composed of 240 samples, disjoint from the training and validation ones.
 \bigbreak
 
-TODO: model validation: how was the data collected and split?
-\bigbreak
+In this work, two network's models have been chosen, and their performance compared. The first one is a time delay neural network, chosen for its simplicity, since the training sequences were short (22 samples) and a complex model might go very easily to overfitting; the second one is a recurrent neural network, chosen for its ability to recognize variable-length patterns.
 
-In this work, two network's models have been chosen, and their performance compared. The following part explains how the model selection was done.
+The following part explains how the model selection was done.
 \bigbreak
 
 \subsection{Time delay neural network}
@@ -253,12 +280,14 @@ As shown in the tables, 9 and 7 were optimal values respectively for the number 
 	\item kernel sizes from 9 upwards tended to overfit the network: the patterns were initially made of 22 samples, and the sliding window was be too big;
 	\item with filters bigger than 20, the overfitting was mitigable only with very low kernel sizes, but in that case the network was hard to train, and very easy to underfit.
 \end{itemize}
-More complex topologies were tried, but adding hidden layers only led the neural network to the overfitting.
+More complex topologies were tried, but adding hidden layers only led the neural network to the overfitting. The best training curve was obtained using 16-patterns long mini-batch.
+
+According to \cite{Hin12}, dropout layers have not been added in the network.
 
 \begin{center}
 	\begin{figure}[ht]
 		\makebox[\textwidth]{\includegraphics[width=0.65\paperwidth]{img/overfitting.png}}
-		\caption{Overfitting with kernel size too high.}
+		\caption{Overfitting due to high kernel size.}
 	\end{figure}
 \end{center}
 
@@ -270,11 +299,11 @@ More complex topologies were tried, but adding hidden layers only led the neural
 \end{center}
 
 \subsubsection{More accuracy with less data}
-The next step was to achieve the maximum accuracy with less possible data. The network was trained several times with different patterns' lengths, and the best choice for a stable and accurate training has proved to be 15 samples per pattern, that with the 22 Hertz sampling means 682 milliseconds long patterns. Up to 12/13 samples, the network was not able to achieve good performance in training, being hard to train and underfitting, while from 17/18 samples and more, the network fitted the noise, so overfitted.
+The next step was to achieve the maximum accuracy with less possible data. The network was trained several times with different patterns' lengths, and the best choice for a stable and accurate training has proved to be 15 samples per pattern, that with the 22 Hertz sampling means 682 milliseconds long patterns. Up to 11-13 samples, the network was not able to achieve good performance in training, being hard to train and underfitting, while from 17 samples and more, the network fitted the noise, so overfitted.
 
 \begin{center}
 	\begin{figure}[ht]
-		\makebox[\textwidth]{\includegraphics[width=0.68\paperwidth]{img/training_acc_samples.pdf}}
+		\makebox[\textwidth]{\includegraphics[width=0.65\paperwidth]{img/training_acc_samples.pdf}}
 		\caption{Training accuracy with pattern with different lengths.}
 	\end{figure}
 \end{center}
@@ -284,3 +313,36 @@ The convolutional layer's weights are initialized randomly in the uniform range 
 \bigbreak
 
 TODO: Why adam optimizer? (paper) Batch size? (useless?)
+
+\subsection{Recurrent neural network}
+\subsubsection{Topology, activation functions and hyperparameters}
+As done with the TDNN, the input passes through a normalization layer before going to the recurrent layer, and the activation function is \textit{ReLU} for all layers, except for the last one, that uses the \textit{softmax} function, particularly suitable for classification.
+\bigbreak
+
+The best topology, that ensured a good fitting without instabilities during the training, is shown in the following schema: one recurrent layer and two densely-connected layers, with two dropout layers before them. In particular, the number of nodes in the recurrent layer was crucial for the model selection:
+\begin{itemize}
+	\item up to 5 units, the network was able neither to learn the training samples nor generalize;
+	\item up to 10 units, the validation accuracy reached almost the 90\%, but then overfitted;
+	\item up to 12 units, the network was hard to train, and with 14 units the network was trained smoothly and the validation accuracy grew over 90\%;
+	\item from 16 upwards, stricter regularization was needed, but the dropout layers made the training stable and avoided the overfitting. The best number of units was discovered to be 20.
+\end{itemize}
+The explored range of dropout for both layers was [0, 0.5]. The network was trained with a mini-batch size of 16.
+
+\begin{center}
+	\begin{figure}[ht]
+		\makebox[\textwidth]{\includegraphics[width=0.55\paperwidth]{img/rnn.pdf}}
+		\caption{RNN final topology.}
+	\end{figure}
+\end{center}
+
+\subsubsection{Features and samples length}
+Adding features besides the three acceleration values made the training harder and unstable, even with more layers and more recurrent units. 
+
+In this model, reducing the number of samples has not improved the validation accuracy as for the TDNN, but the performance significantly decreased only for less than 14 samples per pattern, accordingly to the previous results.
+
+\begin{center}
+	\begin{figure}[ht]
+		\makebox[\textwidth]{\includegraphics[width=0.6\paperwidth]{img/training_acc_samples_2.pdf}}
+		\caption{\dots}
+	\end{figure}
+\end{center}

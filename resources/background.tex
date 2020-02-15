@@ -237,7 +237,6 @@ There are two kinds of ``learning'' processes:
 	\item \textit{supervised}, when the training data is labeled or classified with the correct answer, and the network can use it to improve its performance. The goal is to minimize a loss function, which quantifies the training error; the networks are most often trained with the \textit{backpropagation}, a gradient-descent algorithm that computes the gradient of the loss function, to change them accordingly to the training;
 	\item \textit{unsupervised}, when the training data is neither labeled or classified, and the network has to find by itself the way to categorize the data. In this case, the performance measurement is task-independent \cite{Hay08}.
 \end{itemize}
-
 One of the most famous statistical model for machine learning is the artificial neural network, commonly referred as ``neural network''. It's composed of multiple layers of inter-connected nodes. The term \textit{neural} suggest the parallelism with the biological neural networks that form animal brains, since the Rosenblatt's \textit{perceptron}\footnote{After the McCulloch and Pitt’s neuron, the perceptron was the next step towards the neural networks.} was born to mimic certain part of the neuron, such as dendrites, that receive the electrochemical stimulation from other neural cells, and axons, that propagates it.
 
 The building block of the neural networks is the \textit{neuron}, an information-processing unit that works in this way: takes the inputs from weighted links, adds the weighted input signals together, and finally uses the sum as an input for the activation function; this function's output can be an input for another neuron, or part of the network's output.
@@ -271,12 +270,16 @@ TDNNs are most often implemented by the machine learning frameworks with 1-dimen
 2-dimensional CNNs are widely used for image classification, where the two dimensions are the $x$ and the $y$ axis; in time series classification, of course, the only dimension is the time.
 \bigbreak
 
-Convolution is a linear mathematical operator defined as the integral of the product of two functions, that produces a third function; CNNs use convolution in place of general matrix multiplication \cite{Goo16}.
-\bigbreak
+Convolution is a linear mathematical operator defined as the integral of the product of two functions, that produces a third function; CNNs use convolution in place of general matrix multiplication \cite{Goo16}. The convolution is defined as:
 
-TODO: convolution definition?
-\bigbreak
-
+\[
+	(f*g)(t)\,
+		\triangleq
+	\int_{-\infty }^{\infty} f(\tau)g(t-\tau)\, d\tau\,
+		=
+	\int_{-\infty }^{\infty} f(t-\tau)g(\tau)\, d\tau
+\]
+\newline
 In CNNs, there are two types of layers:
 \begin{itemize}
 	\item the \textit{convolutional layer}, that through a fixed-size window, called \textit{kernel}, slides over the inputs and gives its outputs to the next layer. The kernel of \textit{filters} computes the dot product between its weights and the inputs (this process is called \textit{convolution}), and projects the output in a n-dimensional space, where n is the number of output filters in the convolution;
@@ -285,4 +288,10 @@ In CNNs, there are two types of layers:
 The \textit{shift-invariance} is provided by the kernel's \textit{weights sharing}, that means that the same weights are used across the entire layer's input, so they will learn independently of their position. The kernel's shift over the input after every step is called \textit{stride}, and it's typically 1, but it can be higher to perform down-sampling.
 \bigbreak
 
-TODO: TDNN image (link in the source code) %commons.wikimedia.org/wiki/File:DiagramTDNN_english.png
+\begin{center}
+	\begin{figure}[ht]
+		\makebox[\textwidth]{\includegraphics[width=0.3\paperwidth]{img/tdnn.png}}
+		\caption{TDNN diagram \cite{WikipediaTDNN}.}
+	\end{figure}
+\end{center}
+

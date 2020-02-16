@@ -11,8 +11,12 @@
 \usepackage[utf8]{inputenc} % For input encoding
 \usepackage{listings} % For source code embedding
 \usepackage{multirow} % For merging cells in tables
+\usepackage{rotating} % For landscape images
 \usepackage{setspace} % For line spacing
-\usepackage{xcolor} % Syntax highlight for source code
+\usepackage[table, xcdraw]{xcolor} % Syntax highlight for source code
+
+% Table cells padding
+\renewcommand{\arraystretch}{1.1}
 
 % Bibliography
 \addbibresource{references/bibliography.bib}
@@ -100,19 +104,19 @@
 	\setstretch{1.3}
 
 	\tableofcontents
-	\newpage
+	\clearpage
 
 	\sloppy
 	\widowpenalty 10000 % To avoid widow lines
 
 	\input{resources/introduction.tex}
-	\newpage
+	\clearpage
 	\input{resources/background.tex}
-	\newpage
+	\clearpage
 	\input{resources/architecture.tex}
-	\newpage
+	\clearpage
 	\input{resources/development.tex}
-	\newpage
+	\clearpage
 	\input{resources/conclusions.tex}
 
 	\printbibliography[nottype=online, title=Bibliography]

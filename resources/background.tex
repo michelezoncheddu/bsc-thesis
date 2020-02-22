@@ -2,7 +2,7 @@
 
 \section{Hardware}
 \subsection{Particle Photon}
-Particle Photon is a tiny board (36.58mm $\times$ 20.32mm $\times$ 4.32mm in our configuration, weighing in at 5 grams) specifically designed for Internet of Things (IoT)\footnote{A system of typically embedded devices that connects to the Internet and to each other, without requiring human-to-human or human-to-computer interaction \cite{WikipediaIoT}. There's still no baseline or standard definition, which is why IEEE is asking for suggestions to the community to provide it \cite{IEEEIoT}.} projects \cite{ParticlePhoton}, based on a relatively powerful but power efficient microcontroller of the STM32 ARM Cortex M3 family, with integrated Wi-Fi and the ability to interface itself with cloud services offered by Particle.
+Particle Photon is a tiny board (36.58mm $\times$ 20.32mm $\times$ 4.32mm in our configuration, weighing in at 5 grams) specifically designed for Internet of Things (IoT)\footnote{A system of typically embedded devices that connects to the Internet and to each other, without requiring human-to-human or human-to-computer interaction \cite{IoTAgenda}. There's still no baseline or standard definition, which is why IEEE is asking for suggestions to the community to provide it \cite{IEEEIoT}.} projects \cite{ParticlePhoton}, based on a relatively powerful but power efficient microcontroller of the STM32 ARM Cortex M3 family, with integrated Wi-Fi and the ability to interface itself with cloud services offered by Particle.
 
 Unfortunately, the integrated Wi-Fi module has not been powerful enough to ensure a reliable connection in the tested scenarios, causing frequent disconnections. An Airgain's IPEX antenna, easily pluggable to the Photon through a U.FL connector, has allowed to achieve a more stable connection.
 The code deployment can be performed seamlessly through a web-based IDE, that compiles and flashes the code to the selected device Over-The-Air (OTA). It is also possible to control the real-time device's status through a web-based console, that allows to flash the firmware to a specific version (downgrades are trickier than upgrades, especially OTA), and displays graphs for data such Wi-Fi's signal strength and quality, round trip time and memory usage.
@@ -15,7 +15,7 @@ The code deployment can be performed seamlessly through a web-based IDE, that co
 \end{center}
 
 \subsection{Sensors}
-The SparkFun's sensor stick used in the project is a 9 Degrees of Freedom (9DoF) Magnetic, Angular Rate and Gravity (MARG) Micro-Electro-Mechanical Systems (MEMS) sensor. Its inertial module is the STMicroelectronics's LSM9DS1 integrated circuit, that features a digital linear acceleration sensor, a digital angular rate sensor and a digital magnetic sensor: each one can take measurements from $x$, $y$ and $z$ axes, and that's where the 9 degrees of freedom come from.
+The SparkFun's sensor stick used in the project is a 9 Degrees of Freedom (9DoF) Magnetic, Angular Rate and Gravity (MARG) Micro-Electro-Mechanical Systems (MEMS) sensor. Its inertial module is the STMicroelectronics's LSM9DS1 integrated circuit, that features a digital linear acceleration sensor, a digital angular rate sensor and a digital magnetic sensor: each one can take measurements from $x$, $y$ and $z$ axes – hence 9 degrees of freedom.
 
 The stick has been connected to the Photon through the I$^2$C serial bus interface. Its compact size and power efficiency make it ideal for embedded systems \cite{SensorDatasheet}.
 
@@ -60,7 +60,7 @@ This section describes the mathematical formalisms to represent three-dimensiona
 \subsection{Tait–Bryan angles}
 Tait–Bryan angles (also called nautical angles or \textit{yaw, pitch and roll}) are a variant of Euler angles, normally used for aerospace applications (wherein they are often called Euler angles). Euler angles are a minimal representation (a set of three numbers) of relative orientation. This set of three angles describes a sequence of rotations about the axes of a reference frame. There are, however, sets that describe the same orientation: different combinations of $x$, $y$, and $z$ axes lead to different Euler angles \cite{Rob20}.
 
-The only difference is that Tait–Bryan angles represent rotations about three distinct axes (e.g. $x$-$y$-$z$), while proper Euler angles use the same axis for both the first and third elemental rotations (e.g. $z$-$x$-$z$) \cite{WikipediaEulerAngles}.
+The only difference is that Tait–Bryan angles represent rotations about three distinct axes (e.g. $x$-$y$-$z$), while proper Euler angles use the same axis for both the first and third elemental rotations (e.g. $z$-$x$-$z$) \cite{Sta18}.
 
 Once fixed a reference frame, \textit{yaw, pitch and roll} represent the rotation angle around the $z$, $y$, and $x$ axis, respectively.
 If the rotation occurs about the axes of the original coordinate system, which remains motionless, the rotation is called \textit{extrinsic}, and when it occurs about the axes of the rotating coordinate system, which changes its orientation after each elemental rotation, the rotation is called \textit{intrinsic}. It's interesting to know that $z$-$y$-$x$ intrinsic rotations correspond to $x$-$y$-$z$ extrinsic ones, and the same applies to every reversed-order rotation.
@@ -199,7 +199,7 @@ ensure an unique representation.
 \section{Filters}
 Motion representation can be obtained through accelerometer reading within the $x$, $y$ and $z$ axes, that make up an acceleration vector.
 
-MEMS sensors are known to be very noisy, especially when working at high reading frequencies \cite[7]{Mat08}, and the noise is of a specific type, the Additive White\footnote{White noise is a random signal with constant amplitude across the whole frequency spectrum.} Gaussian\footnote{Noise with a probability density function equal to that of the normal distribution, which is also known as the Gaussian distribution \cite{WikipediaGaussianNoise}.} Noise (AWGN) \cite{Yas03}. An effective way to remove AWGN is to use the Kalman filter \cite{Ko07, Sär15}, as it assumes that the errors are Gaussian \cite{Kal60}.
+MEMS sensors are known to be very noisy, especially when working at high reading frequencies \cite[7]{Mat08}, and the noise is of a specific type, the Additive White\footnote{White noise is a random signal with constant amplitude across the whole frequency spectrum \cite{Feh97}.} Gaussian\footnote{Noise with a probability density function equal to that of the normal distribution, which is also known as the Gaussian distribution \cite{Feh97}.} Noise (AWGN) \cite{Yas03}. An effective way to remove AWGN is to use the Kalman filter \cite{Ko07, Sär15}, as it assumes that the errors are Gaussian \cite{Kal60}.
 
 \subsection{Kalman filter}
 Kalman filtering, also known as linear quadratic estimation (LQE) \cite{Ma19}, is an efficient recursive algorithm that uses a series of measurements observed over time, containing statistical noise and other inaccuracies, and produces estimates of unknown variables (the internal state of a linear dynamic system\footnote{Linear dynamic systems are systems in which its evolution is described by a linear function and hence satisfies the superposition principle.} \cite[47]{Ma19}) \cite[7-8]{Ma19}. This approach tends to be more precise than those based on a single measurement alone, because it uses using Bayesian inference and estimates a joint probability distribution over the variables for each timeframe \cite[8]{Ma19}.
@@ -211,7 +211,7 @@ Kalman filter is most often conceptualized as two distinct phases \cite[12-13]{M
 	\item measure update: observation phase, where the prediction is combined with the current observation information to refine the state estimate (\textit{a posteriori} state estimate).
 \end{itemize}
 
-The Kalman filter has numerous applications in technology, like navigation and control of vehicles, particularly aircraft, spacecraft and dynamically positioned ships \cite{WikipediaKalman}.
+The Kalman filter has numerous applications in technology, like navigation and control of vehicles, particularly aircraft, spacecraft (NASA) and dynamically positioned ships \cite{Tri83, Fun83}.
 
 \subsection{Madgwick filter} \label{Madgwick filter}
 In 2009 Sebastian O. H. Madgwick, as part of his Ph.D research at the University of Bristol, developed an orientation filter for IMU (6DoF: tri-axis gyroscope and accelerometer) and MARG (9DoF: IMU + tri-axis magnetometer) sensors.
@@ -295,3 +295,41 @@ The \textit{shift-invariance} is provided by the kernel's \textit{weights sharin
 	\end{figure}
 \end{center}
 
+\subsection{Recurrent neural networks}
+Recurrent neural networks (RNN) are networks in which there is at least one \textit{feedback loop}. The presence of loops and self-loops connections provides the network dynamical properties, leaving a memory (states) of the past computations in the model, and allowing it to process variable-length inputs \cite{Yan09} (it's like a new layer is created for each encoding step of the input sequence). This makes them ideal for handwriting recognition or speech recognition \cite{Gra09, Li15}.
+\bigbreak
+
+The most common learning algorithm is a generalization of the backpropagation for feedforward neural networks, and it's based on unfolding the recurrent network' states in time: it's called \textit{backpropagation through time} (BPTT) \cite{Wer88}.
+\bigbreak
+
+A famous RNN model is the long short-term memory (LSTM), that allowed to solve the \textit{vanishing gradient problem} (through BPTT), that especially affected RNN when unfolding deep layers \cite{Pas12}.
+
+This model also revolutionized handwriting recognition \cite{Fer07, Gra09}, speech recognition \cite{Li15}, text-to-speech synthesis \cite{Fan15} and more.
+
+\begin{center}
+	\begin{figure}[ht!]
+		\makebox[\textwidth]{\includegraphics[width=0.6\paperwidth]{img/rnn_unfold.png}}
+		\caption{A single-unit recurrent neural network and the unfolding in time of its computations \cite{WikipediaRNNunfold}.}
+	\end{figure}
+\end{center}
+
+\subsection{Evaluate neural networks} \label{Evaluate neural networks}
+To evaluate the networks' performances on a classification task, it's helpful to know how a \textit{confusion matrix} works: given a positive pattern, it can be correctly classified as positive, or misclassified as negative. These predictions are respectively called True Positive (TP) and False Negative (FN). The opposite happens when the pattern is negative, where the correct prediction is called True Negative (TN), and the wrong one is called False Positive (FP). The actual classification and the predicted one make up the columns and the rows of the confusion matrix.
+
+\begin{table}[ht!]
+	\centering
+	\begin{tabular}{cccc}
+									 &                            & \multicolumn{2}{c}{\textbf{Predicted}} \\
+									 & \multicolumn{1}{c|}{}      & True               & False             \\ \cline{2-4} 
+	\multirow{2}{*}{\textbf{Actual}} & \multicolumn{1}{c|}{True}  & True Positive      & False Negative    \\
+									 & \multicolumn{1}{c|}{False} & False Positive     & True Negative    
+	\end{tabular}
+	\caption{Confusion matrix.}
+\end{table}
+Now some metrics are needed:
+\begin{itemize}
+	\item \textit{Accuracy}: the ratio of the correct classifications to the total observed cases. $\frac{TP+TN}{TP+FP+TN+FN}$
+	\item \textit{Precision}: the ratio of the correctly identified positive cases from all the predicted positive cases. High precision means few false positives. $\frac{TP}{TP+FP}$
+	\item \textit{Recall}: the ratio of the correctly identified positive cases from all the actual positive cases. High recall means few false negatives. $\frac{TP}{TP+FN}$
+	\item \textit{F1 score}: the weighted average of precision and recall; gives a better measure of the incorrectly classified cases than the accuracy \cite{Hui19}. $2\, \frac{Precision \times Recall}{Precision + Recall}$
+\end{itemize}

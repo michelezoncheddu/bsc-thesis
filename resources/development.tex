@@ -7,11 +7,11 @@ In the previous project's code, some time and memory optimizations have been mad
 \section{MQTT QoS2 caching}
 As mentioned in the \textit{Unsolved Issues} chapter of Dario Piotrowicz's thesis \cite{Pio19}, there was a problem with unreliable Wi-Fi networks (an issue in the library's GitHub repository is still open \cite{githubQos2Issue}): all messages generated while a broken client-broker connection were discarded, instead of being stored to be sent when the connection will be re-established.
 
-To solve that issue have been implemented two caching queues, one for each connection: the playing session one and the neural network's pattern collection one.
+To solve that issue have been implemented two caching queues, one for each connection: the play session one and the neural network's pattern collection one.
 
 The cache size has been set to a safe value of 32 kilobytes (tested experimentally: bigger values led the Photon out of memory more often than not). The maximum number of messages that can be cached is stored in the \texttt{cache\_size} variable. With a maximum message size of 512 characters (511 effective characters because of the null terminator), the value is easily calculated as 32.
 
-The following is a graph of the playing session's connection caching implementation; the neural network one is analogous.
+The following is a graph of the play session's connection caching implementation; the neural network one is analogous.
 \bigbreak
 
 \begin{lstlisting}[style=CPPStyle]
@@ -45,7 +45,7 @@ The following is a graph of the playing session's connection caching implementat
 This solution has made possible to damper temporary disconnections caused by instable connections.
 
 \section{Motion capture}
-In the software's previous version, developed and improved by Dario Piotrowicz \cite{Pio19} from the Marco Lanini's project \cite{Lan17}, the data processed by the device and sent to the server were:
+In the software's previous version, the data processed by the device and sent to the server were:
 \begin{itemize}
 	\item device's orientation both in quaternions and yaw, pitch and roll angles;
 	\item device's acceleration in Cartesian and spherical coordinates system;
@@ -53,7 +53,7 @@ In the software's previous version, developed and improved by Dario Piotrowicz \
 	\item device's velocity approximation.
 \end{itemize}
 
-This work's aim is to detect \textit{discriminating features among different playing patterns}, by collecting and analyzing the sensors data stream; the analysis followed the flow in the data fusion schema (Figure \ref{old data fusion schema}), except for the velocity approximation.
+This work's aim is to detect \textit{discriminating features among different play patterns}, by collecting and analyzing the sensors data stream; the analysis followed the flow in the data fusion schema (Figure \ref{old data fusion schema}), except for the velocity approximation.
 \bigbreak
 
 The velocity approximation, calculated by the \textit{Velocimeter} class \cite{Pio19}, was early excluded because of the practical difficulty in obtaining realistic values using only inertial sensors, where measurement errors are unavoidable, especially for miniature MEMS sensors \cite{Du15, Est14, Kow15, Liu01, Sei07, UsingAcc, Woo07, Yan06}. Several trials with different values of the class' attenuation and amplification have not given overall better results.
@@ -186,6 +186,7 @@ Not all patterns need the same recording time: for example, the duration of the 
 
 \section{Time series classification}
 Standard feedforward neural networks are not suitable for time series classification tasks, because they are not \textit{shift-invariant} (in this case, time-invariant). For time series patterns, this allows the network to classify a pattern regardless of its start time.
+\bigbreak
 
 \subsection{Dataset}
 For model training and validation, the dataset was composed of:
@@ -199,6 +200,9 @@ For model training and validation, the dataset was composed of:
 The training and validation portions were respectively the 60\% and the 40\% of the total, and the entire dataset is shuffled before every training.
 
 The test set was composed of 240 samples, disjoint from the training and validation ones.
+\bigbreak
+
+The previous neural network model, a LSTM, has been changed as it's not suitable and it may be over-dimensioned for fixed length sequences, especially if short – its workhorse are long variable-length sequences.
 \bigbreak
 
 In this work, two network's models have been chosen, and their performance compared. The first one is a time delay neural network, chosen for its simplicity, since the training sequences were short (22 samples) and a complex model might go very easily to overfitting; the second one is a recurrent neural network, chosen for its ability to recognize variable-length patterns.
@@ -219,7 +223,7 @@ The model selection started from the simplest topology: an input layer with data
 \end{center}
 
 \subsubsection{Features}
-Only three features were considered relevant for the training: the gravity-free accelerations values in the three axes. Some tests showed quickly that adding more features, like orientation, velocity data, or raw sensors data, made the network almost untrainable with this simple model.
+Only three features were considered relevant for the training: the gravity-free accelerations values in the three axes. Some tests showed quickly that adding more features, like orientation, velocity data, or raw sensors data, made the network generally harder to train, and most often gave no advantage at all in the overall accuracy.
 
 \subsubsection{Hyperparameters}
 The search for the two most important hyperparameters, the \textit{kernel} size and the number of \textit{filters}, has been performed through a \textit{grid search}. For each table's entry, the network has been tested 10 times, with shuffled data between testing and validation set for each run. Outliers have been omitted from the average.
@@ -317,7 +321,7 @@ The explored range of dropout for both layers was [0, 0.5]. The network was trai
 \end{center}
 
 \subsubsection{Features and samples length}
-Adding features besides the three acceleration values made the training harder and unstable, even with more layers and more recurrent units. 
+Adding features besides the three acceleration values gave most often no advantage at all, and sometimes made the training harder and unstable, also with more layers and more recurrent units.
 
 In this model, reducing the number of samples has not improved the validation accuracy as for the TDNN, but the performance significantly decreased only for less than 14 samples per pattern, accordingly to the results achieved with the TDNN.
 
@@ -337,26 +341,7 @@ After the analysis of the training and validation data, the choice fell to the T
 Though, the RNN offers the benefit of learning variable-length patterns, but in this case it didn't give an advantage.
 \bigbreak
 
-To evaluate the networks' performances, it's helpful to know how a \textit{confusion matrix} works: given a positive pattern, it can be correctly classified as positive, or misclassified as negative. These predictions are respectively called True Positive (TP) and False Negative (FN). The opposite happens when the pattern is negative, where the correct prediction is called True Negative (TN), and the wrong one is called False Positive (FP). The actual classification and the predicted one make up the columns and the rows of the confusion matrix.
-
-\begin{table}[ht!]
-	\centering
-	\begin{tabular}{cccc}
-									 &                            & \multicolumn{2}{c}{\textbf{Predicted}} \\
-									 & \multicolumn{1}{c|}{}      & True               & False             \\ \cline{2-4} 
-	\multirow{2}{*}{\textbf{Actual}} & \multicolumn{1}{c|}{True}  & True Positive      & False Negative    \\
-									 & \multicolumn{1}{c|}{False} & False Positive     & True Negative    
-	\end{tabular}
-	\caption{Confusion matrix.}
-\end{table}
-Now some metrics are needed:
-\begin{itemize}
-	\item \textit{Accuracy}: the ratio of the correct classifications to the total observed cases. $\frac{TP+TN}{TP+FP+TN+FN}$
-	\item \textit{Precision}: the ratio of the correctly identified positive cases from all the predicted positive cases. High precision means few false positives. $\frac{TP}{TP+FP}$
-	\item \textit{Recall}: the ratio of the correctly identified positive cases from all the actual positive cases. High recall means few false negatives. $\frac{TP}{TP+FN}$
-	\item \textit{F1 score}: the weighted average of precision and recall; gives a better measure of the incorrectly classified cases than the accuracy \cite{Hui19}. $2\, \frac{Precision \times Recall}{Precision + Recall}$
-\end{itemize}
-Follows a comparison between the networks' testing results, based on confusion matrices, accuracy and F1 score.
+Follows a comparison between the networks' testing results, based on confusion matrices, accuracy and F1 score (for the theoretical concepts see section \ref{Evaluate neural networks}).
 
 \begin{table}[ht!]
 	\centering

@@ -223,7 +223,7 @@ The model selection started from the simplest topology: an input layer with data
 \end{center}
 
 \subsubsection{Features}
-Only three features were considered relevant for the training: the gravity-free accelerations values in the three axes. Some tests showed quickly that adding more features, like orientation, velocity data, or raw sensors data, made the network generally harder to train, and most often gave no advantage at all in the overall accuracy.
+Only six features were considered relevant for the training: the gravity-free accelerations values in the three axes and the gyroscope raw data – the gyroscope data is used to discriminate some cases that are not well distinguished only by the acceleration. Some tests showed quickly that adding more features, like orientation, velocity data, or raw sensors data, made the network generally harder to train, and most often gave no advantage at all in the overall accuracy.
 
 \subsubsection{Hyperparameters}
 The search for the two most important hyperparameters, the \textit{kernel} size and the number of \textit{filters}, has been performed through a \textit{grid search}. For each table's entry, the network has been tested 10 times, with shuffled data between testing and validation set for each run. Outliers have been omitted from the average.
@@ -315,13 +315,13 @@ The explored range of dropout for both layers was [0, 0.5]. The network was trai
 
 \begin{center}
 	\begin{figure}[ht!]
-		\makebox[\textwidth]{\includegraphics[width=0.55\paperwidth]{img/rnn.pdf}}
+		\makebox[\textwidth]{\includegraphics[width=0.55\paperwidth]{img/rnn_topology.pdf}}
 		\caption{RNN final topology.}
 	\end{figure}
 \end{center}
 
 \subsubsection{Features and samples length}
-Adding features besides the three acceleration values gave most often no advantage at all, and sometimes made the training harder and unstable, also with more layers and more recurrent units.
+Adding features besides the gravity-free acceleration and the gyroscope data gave most often no advantage at all, and sometimes made the training harder and unstable, also with more layers and more recurrent units.
 
 In this model, reducing the number of samples has not improved the validation accuracy as for the TDNN, but the performance significantly decreased only for less than 14 samples per pattern, accordingly to the results achieved with the TDNN.
 

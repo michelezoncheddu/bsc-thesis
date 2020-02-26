@@ -4,9 +4,6 @@ After the analysis of the training and validation data, the choice fell to the T
 	\item has got better validation accuracy and a smaller loss value;
 	\item in almost every test, showed smoother training and validation curves, and was easier to train effectively.
 \end{itemize}
-Though, the RNN offers the benefit of learning variable-length patterns, but in this case it didn't give an advantage.
-\bigbreak
-
 Follows a comparison between the networks' testing results, based on confusion matrices, accuracy and F1 score (for the theoretical concepts see section \ref{Evaluate neural networks}).
 
 \begin{table}[ht!]
@@ -63,3 +60,31 @@ Follows a comparison between the networks' testing results, based on confusion m
 		\caption{F1 score comparison between TDNN and RNN.}
 	\end{figure}
 \end{center}
+\clearpage
+
+The high accuracy obtained in validation and testing might not reflect the real network's performances in analyzing real play sessions: in the first two cases, the patterns have a well-defined start and end, while in a play session there is a contiguous stream of data; for the classification, the network is given a fixed-length subsection of that stream for each 22nd of second, and the subsection's bounds slide forward, like a sliding window, through the whole stream. When subsection contains only a single pattern, the networks behaves exactly like in the validation/testing scenario, but when there is an overlapping between two patterns (e.g. the toy stops flying and stays still), the classification is harder, because that's not a case that the network was trained to deal with.
+\bigbreak
+
+The following images represents data from a 46 seconds-long session of simulated play, that has been split in four charts for simplicity's sake: the $x$-axis represents the time, the left $y$-axis represents the neural network classification, charted with a black line, and the right $y$-axis represents the intensity of the acceleration among the three dimensions, charted with three different colors. Finally, the colored stripes below the graph represents the ground truth, and the slashes indicates that the classification isn't changing within the omitted period of time.
+\bigbreak
+
+TODO: how does the network behave?
+The ``still'' label has been omitted because the recognition of the stillness condition is trivial.
+
+\clearpage
+\begin{sidewaysfigure}[tbp]
+	\includegraphics[width=\textwidth]{img/plots/session/1.png}
+	\vspace{2cm}
+
+	\includegraphics[width=\textwidth]{img/plots/session/2.png}
+\end{sidewaysfigure}
+\clearpage
+
+\clearpage
+\begin{sidewaysfigure}[tbp]
+	\includegraphics[width=\textwidth]{img/plots/session/3.png}
+	\vspace{2cm}
+
+	\includegraphics[width=\textwidth]{img/plots/session/4.png}
+\end{sidewaysfigure}
+\clearpage

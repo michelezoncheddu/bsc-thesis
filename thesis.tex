@@ -5,6 +5,7 @@
 \usepackage[backend=bibtex, urldate=iso, seconds=true]{biblatex} % For bibliography
 \usepackage{enumitem} % For lists spacing
 \usepackage{fancyhdr} % For the fancy header
+\usepackage[T1]{fontenc}
 \usepackage{geometry} % For page margins
 \usepackage{graphicx} % For images
 \usepackage[hidelinks]{hyperref} % For links
@@ -47,8 +48,8 @@
 
 % Page margins
 \newgeometry{
-    top=3.5cm,
-    bottom=3.5cm,
+    top=3cm,
+    bottom=3cm,
     outer=2.5cm,
     inner=4cm,
 }
@@ -63,7 +64,7 @@
 \setlist[itemize]{itemsep=1mm}
 
 
-\title{Title}
+\title{Development of the sensors data stream analysis module of MoVEAS}
 \author{Michele Zoncheddu}
 \date{AA 18-19}
 \makeatletter
@@ -71,34 +72,44 @@
 \begin{document}
 
 	\begin{titlepage}
-		\centering
-		\includegraphics[height=12pc]{img/university_logos/cherubino_unipi.pdf}
-		\bigbreak
-		\bigbreak
-		\bigbreak
+		
+		\begin{center}
 
-		{\LARGE{\textbf{\@title}}}
-		\bigbreak
-		\bigbreak
+		{\Large University of Pisa}
+		\medskip
+
+		{\Large Department of Computer Science}
+
+		\vspace{20mm}
+
+		{\bfseries\Large \textsc{Bachelor Thesis}}
+
+		\vfill
+
+		\centerline{\mbox{\includegraphics[width=4cm]{img/university_logos/cherubino_unipi.pdf}}}
+
+		\vfill
+
+		{\LARGE\bfseries Development of the sensors data stream}
 		\medbreak
+		{\LARGE\bfseries analysis module of MoVEAS}
 
-		{\large{Bachelor's Thesis}}
-		\bigbreak
-		\bigbreak
-		\medbreak
+		\vfill
 
-		{\Large{\textbf{\@author}}}
-		\bigbreak
-		\bigbreak
-		\medbreak
+		\large
+		\begin{tabular}{rl}
+			\textit{Candidate:} & Michele Zoncheddu\\
+			\noalign{\vspace{2mm}}
+			\textit{Supervisor:} & Prof. Stefano Chessa\\
+		\end{tabular}
+		
+		\vspace{20mm}
 
-		{\Large{University of Pisa}}
-		\bigbreak
+		\vfill
 
-		{\Large{Department of Computer Science}}
-		\bigbreak
+		{\large \textsc{Academic Year 2018/2019}}
+	\end{center}
 
-		{\Large{\@date}}
 	\end{titlepage}
 
 	\setstretch{1.25}

@@ -133,11 +133,11 @@ The rotation of the acceleration vector has been performed through a three-dimen
 
 \clearpage
 \begin{sidewaysfigure}[tbp]
-	\includegraphics[width=\textwidth]{img/plots/drift.png}	
+	\includegraphics[width=\textwidth]{img/plots/drift.png}
 	\caption{Yaw errors after 360$^{\circ}$ rotations. Note the 45$^{\circ}$ error in the second pattern, that made the acceleration that was only in the $x$ axis, to split almost equally between the $x$ and $y$ axes. In the third pattern the error is nearly 90$^{\circ}$, which is why the acceleration in the $x$ axis is moved to the $y$ axis.}
-	\bigbreak
+	\vspace{2cm}
 
-	\includegraphics[width=\textwidth]{img/plots/nodrift.png}	
+	\includegraphics[width=\textwidth]{img/plots/nodrift.png}
 	\caption{Accelerations corrected by the coordinate system rotation: they are always split in the same way.}
 \end{sidewaysfigure}
 \clearpage
@@ -165,7 +165,6 @@ The current data flow is illustrated by the schema:
 \begin{center}
 	\begin{figure}[ht!]
 		\makebox[\textwidth]{\includegraphics[width=0.65\paperwidth]{img/data_fusion.pdf}}
-		\caption{Current data fusion schema.}
 	\end{figure}
 \end{center}
 
@@ -205,7 +204,9 @@ The test set was composed of 240 samples, disjoint from the training and validat
 The previous neural network model, a LSTM, has been changed as it's not suitable and it may be over-dimensioned for fixed length sequences, especially if short – its workhorse are long variable-length sequences.
 \bigbreak
 
-In this work, two network's models have been chosen, and their performance compared. The first one is a time delay neural network, chosen for its simplicity, since the training sequences were short (22 samples) and a complex model might go very easily to overfitting; the second one is a recurrent neural network, chosen for its ability to recognize variable-length patterns.
+In this work, two network's models have been chosen, and their performance compared. The first one is a time delay neural network, chosen for its simplicity, since the training sequences were short (22 samples) and a complex model might go very easily to overfitting; the second one is a recurrent neural network, chosen for its ability to recognize short sequences.
+
+The RNN is also able to recognize variable-length patterns, but in this case both networks have been trained with the same dataset of fixed-length sequences because, in case of variable lengths, a big problem would occur: identify the end of a sequence. With TDNN, the classification is simply made by a window of size 14 that slides over the entire session's data.
 
 The following part explains how the model selection was done.
 \bigbreak
@@ -285,7 +286,7 @@ According to \cite{Hin12}, dropout layers have not been added in the network.
 \end{center}
 
 \subsubsection{More accuracy with less data}
-The next step was to achieve the maximum accuracy with less possible data. The network was trained several times with different patterns' lengths, and the best choice for a stable and accurate training has proved to be 15 samples per pattern, that with the 22 Hertz sampling means 682 milliseconds long patterns. Up to 11-13 samples, the network was not able to achieve good performance in training, being hard to train and underfitting, while from 17 samples and more, the network fitted the noise, so overfitted.
+The next step was to achieve the maximum accuracy with less possible data. The network was trained several times with different patterns' lengths, and the best choice for a stable and accurate training has proved to be 14 samples per pattern, that with the 22 Hertz sampling means 636 milliseconds long patterns. Up to 11-13 samples, the network was not able to achieve good performance in training, being hard to train and underfitting, while from 17 samples and more, the network fitted the noise, so overfitted.
 
 \begin{center}
 	\begin{figure}[ht!]

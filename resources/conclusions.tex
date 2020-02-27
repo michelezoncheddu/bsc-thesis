@@ -1,1 +1,16 @@
 \chapter{Conclusions}
+This document presented the new developments for MoVEAS: how previous features have been refined, and which new features have been implemented, to improve the software performances and usability.
+
+In particular, the focus has been on the choice of the relevant data to classify the movements, on the consistency of that data over time, on the effective training and comparison between two neural network models, and on the performance of the deployed model in a real scenario simulation.
+\bigbreak
+
+Despite the good results achieved in this experimental phase, only working with children with ASD can reveal the actual project's usefulness, with strong and weak points. In this perspective, the next experimental phase is already planned, with a sample of already diagnosed ASD children and a control group of neurotypical children.
+\bigbreak
+
+The software is still in an experimental stage, so the current limitations and lacks may be the starting point for future developments.
+
+For the movement classification, it might be useful to ``flatten'' the small spikes that affect the continuity of a classification, in order to obtain compact chunks to highlight with different colors in the session's scrollbar.
+
+Another path to be explored is to train the recurrent neural network with a variable-length patterns training set, and to find the best way to choose dynamically the length of the session's subsequence to feed the network with, in order to exploit the full network's capabilities.
+
+There are some other improvements which can be made to provide a more complete and reliable system, both software-wise, like the implementation of an authentication system, and hardware-wise, to detect the devices' battery power level.

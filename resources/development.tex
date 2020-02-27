@@ -213,7 +213,7 @@ The following part explains how the model selection was done.
 
 \subsection{Time delay neural network}
 \subsubsection{Topology and activation functions}
-The model selection started from the simplest topology: an input layer with data normalization, a convolutional hidden layer with a \textit{ReLU} activation function, that performed better than \textit{tanh}, and an output layer for the pattern classification, with a \textit{softmax} function, to obtain values between 0 and 1, representing the probability of the classified pattern to belong to each possible class.
+The model selection started from the simplest topology: an input layer with data normalization, a convolutional hidden layer with a \textit{ReLU} activation function, that performed better than \textit{tanh}, a max-pooling layer, that showed better results than the average-pooling one, and finally an output layer for the pattern classification, with a \textit{softmax} function, to obtain values between 0 and 1, representing the probability of the classified pattern to belong to each possible class.
 \bigbreak
 
 \begin{center}
@@ -312,7 +312,7 @@ The best topology, that ensured a good fitting without instabilities during the 
 	\item up to 12 units, the network was hard to train, and with 14 units the network was trained smoothly and the validation accuracy grew up to 93.5\%;
 	\item from 16 upwards, stricter regularization was needed, but the dropout layers made the training stable and avoided the overfitting. The best number of units was discovered to be 20.
 \end{itemize}
-The explored range of dropout for both layers was [0, 0.5]. The network was trained with a mini-batch size of 16.
+The explored range of dropout for both layers was [0, 0.5]. The network was trained with a mini-batch size of 16 patterns.
 
 \begin{center}
 	\begin{figure}[ht!]

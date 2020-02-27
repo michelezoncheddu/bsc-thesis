@@ -65,11 +65,10 @@ Follows a comparison between the networks' testing results, based on confusion m
 The high accuracy obtained in validation and testing might not reflect the real network's performances in analyzing real play sessions: in the first two cases, the patterns have a well-defined start and end, while in a play session there is a contiguous stream of data; for the classification, the network is given a fixed-length subsection of that stream for each 22nd of second, and the subsection's bounds slide forward, like a sliding window, through the whole stream. When subsection contains only a single pattern, the networks behaves exactly like in the validation/testing scenario, but when there is an overlapping between two patterns (e.g. the toy stops flying and stays still), the classification is harder, because that's not a case that the network was trained to deal with.
 \bigbreak
 
-The following images represents data from a 46 seconds-long session of simulated play, that has been split in four charts for simplicity's sake: the $x$-axis represents the time, the left $y$-axis represents the neural network classification, charted with a black line, and the right $y$-axis represents the intensity of the acceleration among the three dimensions, charted with three different colors. Finally, the colored stripes below the graph represents the ground truth, and the slashes indicates that the classification isn't changing within the omitted period of time.
+The following images represents data from a 46 seconds-long session of simulated play, that has been split in four charts for simplicity's sake: the $x$-axis represents the time, the left $y$-axis represents the neural network classification, charted with a black line, and the right $y$-axis represents the intensity of the acceleration among the three dimensions, charted with three different colors. Finally, the colored stripes below the graph represents the ground truth, and the slashes indicates that the classification isn't changing within the omitted period of time. The gray stripe represents the ``still'' condition, but its label has been omitted for better readability.
 \bigbreak
 
-TODO: how does the network behave?
-The ``still'' label has been omitted because the recognition of the stillness condition is trivial.
+The network was able to accurately recognize the \textit{still}, \textit{forward} and \textit{backward} patterns, while in \textit{flight} and especially \textit{walking}, the overall classification is correct, but there are some short misclassifications, visible as spikes in the graph.
 
 \clearpage
 \begin{sidewaysfigure}[tbp]
